@@ -36,9 +36,7 @@ module AtomicAdmin
       end
   
       @user_tenant = token["user_tenant"] if token["user_tenant"].present?
-      switch_tenant_if_welcome do
-        @user = User.find(token["user_id"])
-      end
+      @user = User.find(token["user_id"])
   
       sign_in(@user, event: :authentication, store: false)
     rescue JWT::DecodeError, InvalidTokenError => e
