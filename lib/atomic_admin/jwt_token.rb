@@ -1,13 +1,28 @@
 module AtomicAdmin
   module JwtToken
-  
+ 
+    ALGORITHM = "HS512".freeze
+
     class InvalidTokenError < StandardError; end
-  
+
+    def self.valid?(token, secret = nil, algorithm = ALGORITHM)
+      decode(token, secret, true, algorithm)
+    end
+
+    def self.decode(token, secret = nil, validate = true, algorithm = ALGORITHM)
+      JWT.decode(
+        token,
+        secret || Rails.application.secrets.auth0_client_secret,
+        validate,
+        { algorithm: algorithm },
+      )
+    end
+
     def decoded_jwt_token(req, secret = nil)
-      token = AuthToken.valid?(encoded_token(req), secret)
+      token = AtomicAdmin::JwtToken.valid?(encoded_token(req), secret)
       raise InvalidTokenError, "Unable to decode jwt token" if token.blank?
       raise InvalidTokenError, "Invalid token payload" if token.empty?
-  
+
       token[0]
     end
  
