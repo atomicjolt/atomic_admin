@@ -10,19 +10,12 @@ module AtomicAdmin
   
       token[0]
     end
-  
-    def validate_token_with_secret(aud, secret, req = request)
-      token = decoded_jwt_token(req, secret)
-      raise InvalidTokenError if aud != token["aud"]
-    rescue JWT::DecodeError, InvalidTokenError => e
-      Rails.logger.error "JWT Error occured: #{e.inspect}"
-      render json: { error: "Unauthorized: Invalid token." }, status: :unauthorized
-    end
-  
+ 
     def validate_token
       token = decoded_jwt_token(request)
       raise InvalidTokenError if Rails.application.secrets.auth0_client_id != token["aud"]
   
+      current_application_instance = request.env['atomic.validated.application_instance_id']
       if current_application_instance && current_application_instance.id != token["application_instance_id"]
         raise InvalidTokenError
       end
