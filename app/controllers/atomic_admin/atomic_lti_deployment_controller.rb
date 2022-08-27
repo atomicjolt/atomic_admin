@@ -9,7 +9,7 @@ module AtomicAdmin
     end
 
     def index
-      render json: AtomicLti::Deployment.all
+      render json: AtomicLti::Deployment.all.order(:id).paginate(page: params[:page], per_page: 30)
     end
 
     def create
