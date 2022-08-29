@@ -21,11 +21,11 @@ module AtomicAdmin
       render json: deployment
     end
 
-    def update
-      deployment = find_deployment
-      result = deployment.update!(deployment_params)
-      render json: result
-    end
+    # def update
+    #   deployment = find_deployment
+    #   result = deployment.update!(deployment_params)
+    #   render json: result
+    # end
 
     def destroy
       deployment = find_deployment
