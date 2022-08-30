@@ -30,8 +30,8 @@ module AtomicAdmin
       token = decoded_jwt_token(request)
       raise InvalidTokenError if Rails.application.secrets.auth0_client_id != token["aud"]
   
-      current_application_instance = request.env['atomic.validated.application_instance_id']
-      if current_application_instance && current_application_instance.id != token["application_instance_id"]
+      current_application_instance_id = request.env['atomic.validated.application_instance_id']
+      if current_application_instance_id && current_application_instance_id != token["application_instance_id"]
         raise InvalidTokenError
       end
   
