@@ -10,7 +10,12 @@ module AtomicAdmin
 
     def index
       page = AtomicLti::Platform.all.order(:id).paginate(page: params[:page], per_page: 30)
-      render json: page
+
+      render json: {
+        platforms: page,
+        page: params[:page],
+        total_pages: page.total_pages
+      }
     end
 
     def create
