@@ -19,7 +19,8 @@ module AtomicAdmin
     end
 
     def create
-      AtomicLti::Platform.create!(platform_params)
+      platform = AtomicLti::Platform.create!(platform_params)
+      render json: { platform: platform }
     end
 
     def show
@@ -29,8 +30,8 @@ module AtomicAdmin
 
     def update
       platform = find_platform
-      result = platform.update!(platform_params)
-      render json: result
+      platform.update!(platform_params)
+      render json: { platform: find_platform }
     end
 
     def destroy
