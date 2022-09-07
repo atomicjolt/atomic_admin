@@ -14,9 +14,25 @@ module AtomicAdmin
         .order(:id)
         .paginate(page: params[:page], per_page: 30)
 
-      page_ids = tenant_deployments.pluck(:id)
+      page_ids = tenant_deployments.pluck(:iss, :deployment_id)
 
-      page = AtomicLti::Deployment.where(id: page_ids)
+      pairs = page_ids.reduce({}) do |acc, c| 
+        iss = c[0]
+        deployment_id = c[1]
+
+        acc[iss] = [] if acc[iss].nil?
+
+        acc[iss].push(deployment_id)
+        acc
+      end
+
+      page = pairs.reduce([]) do |acc, pair| 
+        iss = pair[0]
+        deployment_ids = pair[1]
+
+        deployments = AtomicLti.get_deployments(iss: iss, deployment_ids: deployment_ids)
+        acc.concat(deployments)
+      end
 
       render json: {
         deployments: page,
