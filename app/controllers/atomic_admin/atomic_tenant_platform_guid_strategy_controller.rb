@@ -19,14 +19,14 @@ module AtomicAdmin
       }
     end
 
-    def index 
-      page = AtomicTenant::PinnedPlatformGuid.all.order(:id).paginate(page: params[:page], per_page: 30)
-      render json: {
-        pinned_platform_guids: page,
-        page: params[:page],
-        total_pages: page.total_pages
-      }
-    end
+    # def index 
+    #   page = AtomicTenant::PinnedPlatformGuid.all.order(:id).paginate(page: params[:page], per_page: 30)
+    #   render json: {
+    #     pinned_platform_guids: page,
+    #     page: params[:page],
+    #     total_pages: page.total_pages
+    #   }
+    # end
 
     def create
       result = AtomicTenant::PinnedPlatformGuid.create!(pinned_platform_guid_params)
