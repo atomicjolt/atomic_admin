@@ -8,30 +8,47 @@ module AtomicAdmin
       AtomicTenant::PinnedClientId.find_by(id: params[:id])
     end
 
-    def index 
-      page = AtomicTenant::PinnedClientId.all.all.order(:id).paginate(page: params[:page], per_page: 30)
-      render json: page
+    def search 
+      page = AtomicTenant::PinnedClientId
+        .where(application_instance_id: params[:application_instance_id])
+        .order(:id).paginate(page: params[:page], per_page: 30)
+      render json: {
+        pinned_client_ids: page,
+        page: params[:page],
+        total_pages: page.total_pages
+      }
+    end
+
+    def index
+      page = AtomicTenant::PinnedClientId.all.order(:id).paginate(page: params[:page], per_page: 30)
+      render json: {
+        pinned_client_ids: page,
+        page: params[:page],
+        total_pages: page.total_pages
+      }
     end
 
     def create
-      AtomicLti::Platform.create!(pinned_client_id_params)
+      result = AtomicTenant::PinnedClientId.create!(pinned_client_id_params)
+      render json: { pinned_client_id: result }
     end
 
     def show
-      platform = find_pinned_client_id
-      render json: platform
+      pinned_client_id = find_pinned_client_id
+      render json: {pinned_client_id: pinned_client_id}
     end
-    
-    # def update
-    #   platform = find_pinned_client_id
-    #   result = platform.update!(pinned_client_id_params)
-    #   render json: result
-    # end
+
+    def update
+      pinned_client_id = find_pinned_client_id
+      pinned_client_id.update!(pinned_client_id_params)
+
+      render json: {pinned_client_id: find_pinned_client_id}
+    end
 
     def destroy
-      platform = find_pinned_client_id
-      platform.destroy
-      render json: platform
+      pinned_client_id = find_pinned_client_id
+      pinned_client_id.destroy
+      render json: { pinned_client_id: pinned_client_id }
     end
   end
 end
