@@ -1,3 +1,6 @@
+## Note: This code is basically copied out of the starter app to authenticate 
+##        admin app api calls. Lives at /app/controllers/concerns/jwt_token.rb in
+##        starter app
 module AtomicAdmin
   module JwtToken
  

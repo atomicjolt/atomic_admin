@@ -11,5 +11,5 @@ gem "sprockets-rails"
 # Start debugger with binding.b [https://github.com/ruby/debug]
 # gem "debug", ">= 1.0.0"
 
-# TODO JWT gem
-gem 'atomic_lti', path: "/Users/nickbenoit/Projects/atomic-jolt/atomic_lti" #git: 'https://github.com/atomicjolt/atomic_lti_1v1.git', tag: '0.1.0'
+gem 'atomic_lti', git: 'https://github.com/atomicjolt/atomic_lti.git', branch: 'nb-registrar' #tag: '1.0.0'
+gem 'atomic_tenant', git: 'https://github.com/atomicjolt/atomic_tenant.git', branch: 'main' #tag: '1.0.0'
