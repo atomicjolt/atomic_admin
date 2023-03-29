@@ -8,7 +8,9 @@ gem 'atomic_admin',  git: 'https://github.com/atomicjolt/atomic_admin.git', tag:
 
 Add the following to routes.rb:
   ```
-  namespace :admin do
-    mount AtomicAdmin::Engine => "/"
+  namespace :api do
+    namespace :admin do
+      mount AtomicAdmin::Engine => "/"
+    end
   end
   ```
