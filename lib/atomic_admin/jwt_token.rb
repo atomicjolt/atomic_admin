@@ -76,6 +76,12 @@ module AtomicAdmin
   
       token
     end
-  
+
+    def load_admin_jwks(options)
+      jwks_raw = Net::HTTP.get URI("https://localhost:3000/jwks.json") # TODO: make this configurable
+      jwks_keys = JSON.parse(jwks_raw)
+
+      JWT::JWK::Set.new(jwks_keys).select { |k| k[:use] == "sig" }
+    end
   end
 end
