@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     atomic_admin (0.1.0)
-      rails (>= 7.0.3.1)
+      rails (~> 7.0)
 
 GEM
   remote: https://rubygems.org/
