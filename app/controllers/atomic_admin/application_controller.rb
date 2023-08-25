@@ -1,8 +1,8 @@
 module AtomicAdmin
-  class ApplicationController < ActionController::API 
+  class ApplicationController < ActionController::API
     include AtomicAdmin::JwtToken
     # before_action :authenticate_user! # Use validate_token instead for now
-    before_action :validate_admin_app_token
+     before_action :validate_admin_app_token
      before_action :validate_token
      before_action :only_admins!
 
