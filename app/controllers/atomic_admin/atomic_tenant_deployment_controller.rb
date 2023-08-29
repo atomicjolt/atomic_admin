@@ -9,7 +9,7 @@ module AtomicAdmin
     end
 
     def search
-      tenant_deployments = AtomicTenant::LtiDeployment
+       tenant_deployments = AtomicTenant::LtiDeployment
         .where(application_instance_id: params[:application_instance_id])
         .order(:id)
         .paginate(page: params[:page], per_page: 30)

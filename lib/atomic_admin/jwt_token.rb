@@ -30,8 +30,6 @@ module AtomicAdmin
     end
  
     def validate_token
-      return if @admin_app_validated
-
       token = decoded_jwt_token(request)
       raise InvalidTokenError if Rails.application.secrets.auth0_client_id != token["aud"]
   
@@ -51,16 +49,6 @@ module AtomicAdmin
       rescue NoMethodError
         raise GraphQL::ExecutionError, "Unauthorized: Invalid token."
       end
-    end
-
-    def validate_admin_app_token
-      _bearer, jwt = request.headers['Authorization'].split(' ')
-      @atomic_admin_params = AtomicAdmin::JwtToken.decode(jwt, Rails.application.secrets.atomic_admin_shared_key)
-      @admin_app_validated = true
-    rescue JWT::DecodeError, InvalidTokenError => e
-      # fall back to regular app jwt
-      Rails.logger.error "JWT Error occured with admin app token #{e.inspect}"
-      @admin_app_validated = false
     end
   
     protected
