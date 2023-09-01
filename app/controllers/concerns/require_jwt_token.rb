@@ -2,34 +2,32 @@ module RequireJwtToken
    extend ActiveSupport::Concern
 
   included do
-    before_action :validate_token
+    before_action :validate_admin_token
+    before_action :validate_internal_token
   end
 
   protected
 
-  def validate_token
+  def validate_admin_token
     encoded_token = get_encoded_token(request)
-    token = validate_admin_token(encoded_token)
-    if token.present?
-      @admin_app_validated = true
-      token
-    else
-      validate_internal_token(encoded_token)
-    end
-  end
-
-  def validate_admin_token(encoded_token)
     decoder = AtomicAdmin::JwtToken::JwksDecoder.new(AtomicAdmin.admin_jwks_url)
-    decoder.decode(encoded_token)&.first
+    token = decoder.decode(encoded_token)&.first
+    validate_claims!(token)
+    @admin_app_validated = true
+    token
+  rescue Exception => e
+    # Capture all exceptions to let the internal token validation handle it
+    Rails.logger.error "Admin JWT Error occured #{e.inspect}"
+    nil
   end
 
-  def validate_internal_token(encoded_token)
-    decoder = AtomicAdmin::JwtToken::SecretDecoder.new(AtomicAdmin.internal_secret)
-    token = decoder.decode!(request)
+  def validate_internal_token
+    return if @admin_app_validated
 
-    if AtomicAdmin.audience != token["aud"]
-      raise AtomicAdmin::JwtToken::InvalidTokenError, "Invalid audience"
-    end
+    encoded_token = get_encoded_token(request)
+    decoder = AtomicAdmin::JwtToken::SecretDecoder.new(AtomicAdmin.internal_secret)
+    token = decoder.decode!(encoded_token)
+    validate_claims!(token)
 
     current_application_instance_id = request.env['atomic.validated.application_instance_id']
     if current_application_instance_id && current_application_instance_id != token["application_instance_id"]
@@ -41,13 +39,11 @@ module RequireJwtToken
 
     sign_in(@user, event: :authentication, store: false)
   rescue JWT::DecodeError, AtomicAdmin::JwtToken::InvalidTokenError => e
-    Rails.logger.error "JWT Error occured #{e.inspect}"
-    begin
-      render json: { error: "Unauthorized: Invalid token." }, status: :unauthorized
-    rescue NoMethodError
-      raise RuntimeError, "Unauthorized: Invalid token."
-    end
+    Rails.logger.error "Internal JWT Error occured #{e.inspect}"
+    render json: { error: "Unauthorized: Invalid token." }, status: :unauthorized
   end
+
+  private
 
   def get_encoded_token(req)
     return req.params[:jwt] if req.params[:jwt]
@@ -59,5 +55,11 @@ module RequireJwtToken
     raise AtomicAdmin::JwtToken::MissingTokenError, "Invalid authorization header string" if token.nil?
 
     token
+  end
+
+  def validate_claims!(token)
+    if AtomicAdmin.audience != token["aud"]
+      raise AtomicAdmin::JwtToken::InvalidTokenError, "Expected audience to be #{AtomicAdmin.audience} but was #{token["aud"]}"
+    end
   end
 end
