@@ -8,7 +8,7 @@ module AtomicAdmin
     def only_admins!
       return if @admin_app_validated
 
-      user_not_authorized unless current_user.present? && current_user.admin?
+      user_not_authorized if current_user.blank? && !current_user.admin?
     end
 
     def user_not_authorized(message = "Not Authorized")
