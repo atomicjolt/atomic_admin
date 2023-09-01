@@ -6,7 +6,7 @@ module AtomicAdmin
     private
 
     def only_admins!
-      return if @admin_app_validated
+      return if is_atomic_admin?
 
       user_not_authorized if current_user.blank? && !current_user.admin?
     end

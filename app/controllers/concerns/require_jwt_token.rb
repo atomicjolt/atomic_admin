@@ -2,8 +2,18 @@ module RequireJwtToken
    extend ActiveSupport::Concern
 
   included do
+    attr_accessor :auth_source
+
     before_action :validate_admin_token
     before_action :validate_internal_token
+  end
+
+  def is_atomic_admin?
+    self.auth_source == :atomic_admin
+  end
+
+  def is_internal?
+    self.auth_source == :internal
   end
 
   protected
@@ -13,7 +23,8 @@ module RequireJwtToken
     decoder = AtomicAdmin::JwtToken::JwksDecoder.new(AtomicAdmin.admin_jwks_url)
     token = decoder.decode(encoded_token)&.first
     validate_claims!(token)
-    @admin_app_validated = true
+    self.auth_source = :atomic_admin
+
     token
   rescue Exception => e
     # Capture all exceptions to let the internal token validation handle it
@@ -22,7 +33,7 @@ module RequireJwtToken
   end
 
   def validate_internal_token
-    return if @admin_app_validated
+    return if is_atomic_admin?
 
     encoded_token = get_encoded_token(request)
     decoder = AtomicAdmin::JwtToken::SecretDecoder.new(AtomicAdmin.internal_secret)
@@ -38,6 +49,7 @@ module RequireJwtToken
     @user = User.find(token["user_id"])
 
     sign_in(@user, event: :authentication, store: false)
+    self.auth_source = :internal
   rescue JWT::DecodeError, AtomicAdmin::JwtToken::InvalidTokenError => e
     Rails.logger.error "Internal JWT Error occured #{e.inspect}"
     render json: { error: "Unauthorized: Invalid token." }, status: :unauthorized
