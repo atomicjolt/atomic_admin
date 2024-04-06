@@ -11,6 +11,8 @@ AtomicAdmin::Engine.routes.draw do
 
   resources :atomic_tenant_client_id_strategy
 
-  resources :atomic_applications
+  resources :atomic_applications do
+    get "update_schema", to: "atomic_applications#update_schema"
+  end
   resources :atomic_application_instances
 end

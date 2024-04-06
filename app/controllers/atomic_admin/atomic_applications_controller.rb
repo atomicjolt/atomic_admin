@@ -21,6 +21,10 @@ module AtomicAdmin
       render json: { application: json_for(@application) }
     end
 
+    def update_schema
+      render json: AtomicAdmin::Schema.for(Application.find(params[:atomic_application_id]))
+    end
+
     private
 
     def application_params
