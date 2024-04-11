@@ -2,7 +2,7 @@ module AtomicAdmin
   class AtomicApplicationInstancesController < ApplicationController
 
     def index
-      @application_instances = ApplicationInstance.joins(:application).where(application: { kind: :lti })
+      @application_instances = ApplicationInstance.where(application_id: params[:atomic_application_id])
       @application_instances =
         if type == "paid"
           @application_instances.where.not(paid_at: nil)

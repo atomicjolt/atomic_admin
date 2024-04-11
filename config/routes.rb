@@ -13,6 +13,7 @@ AtomicAdmin::Engine.routes.draw do
 
   resources :atomic_applications do
     get "update_schema", to: "atomic_applications#update_schema"
+
+    resources :atomic_application_instances
   end
-  resources :atomic_application_instances
 end

@@ -1,3 +1,7 @@
+# How do we handle customization of these endpoints?
+# 1. The tools override the controller and add the custom logic
+# 2. The controllers call into the resource's class with the payloads and it handles the details of the implementation
+
 module AtomicAdmin
   class AtomicApplicationsController < ApplicationController
     def index
@@ -7,7 +11,7 @@ module AtomicAdmin
 
     def show
       @application = Application.find(params[:id])
-      render json: { application:  json_for(@application) }
+      render json: { application: json_for(@application) }
     end
 
     def update
@@ -22,7 +26,10 @@ module AtomicAdmin
     end
 
     def update_schema
-      render json: AtomicAdmin::Schema.for(Application.find(params[:atomic_application_id]))
+      render json: AtomicAdmin::Schema.for(
+        Application.find(params[:atomic_application_id]),
+        "update"
+      )
     end
 
     private
