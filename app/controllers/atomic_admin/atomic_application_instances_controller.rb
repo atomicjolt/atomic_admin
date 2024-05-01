@@ -43,6 +43,11 @@ module AtomicAdmin
       render json: { application_instance: json_for(@application_instance) }
     end
 
+    def interactions
+      interactions = AtomicAdmin::Interaction::AtomicApplicationInstanceInteraction.get
+      render json: { interactions: interactions }
+    end
+
     private
 
     def json_for(instance)
