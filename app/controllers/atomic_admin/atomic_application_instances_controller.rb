@@ -38,6 +38,11 @@ module AtomicAdmin
       }
     end
 
+    def show
+      @application_instance = ApplicationInstance.find(params[:id])
+      render json: { application_instance: json_for(@application_instance) }
+    end
+
     private
 
     def json_for(instance)

@@ -6,7 +6,9 @@ module AtomicAdmin
     def self.for(resource, type)
       case [resource.class.name, type]
       when ["Application", "update"]
-        AtomicApplicationUpdateSchema.for(resource)
+        schema = AtomicApplicationUpdateSchema.for(resource)
+        # schema = Application.update_schema(schema)
+        schema
       else
         raise "Unknown resource type: #{resource.class.name}"
       end
