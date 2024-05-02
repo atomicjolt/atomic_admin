@@ -27,11 +27,11 @@ module AtomicAdmin::Schema
           #  The available sites is based on the sites that have been created
           #  so this would require it to be dynamically generated on the fly
           site_id: {
-            type: "string",
+            type: "number",
             oneOf: sites.map do |site|
               {
                 title: site.url,
-                const: site.id.to_s,
+                const: site.id
               }
             end
           },
