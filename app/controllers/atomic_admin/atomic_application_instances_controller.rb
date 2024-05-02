@@ -44,7 +44,8 @@ module AtomicAdmin
     end
 
     def interactions
-      interactions = AtomicAdmin::Interaction::AtomicApplicationInstanceInteraction.get
+      instance = ApplicationInstance.find(params[:id])
+      interactions = AtomicAdmin::Interaction::Manager.for(:application_instances, application_instance: instance)
       render json: { interactions: interactions }
     end
 
