@@ -1,45 +1,48 @@
 module AtomicAdmin::Interaction
-  module Manager
-    @@classes = []
-
-    def self.register(klass)
-      @@classes << klass
+  class Manager
+    def initialize
+      @interactions = {}
+      @curr_index = 0
     end
 
-    def self.for(group, **kwargs)
-      @@key_map ||= @@classes.index_by do |klass|
-        klass.class_variable_get(:@@key)
-      end
+    def add(key, **kwargs)
+      @interactions[key] = {
+        **kwargs,
+        order: @curr_index,
+      }
+      @curr_index += 1
+    end
 
-      group_classes = @@key_map.values.select do |klass|
-        klass.class_variable_get(:@@group) == group && klass.class_variable_get(:@@enabled)
-      end.sort do |a, b|
-        a.class_variable_get(:@@order) <=> b.class_variable_get(:@@order)
-      end
+    def get(key)
+      @interactions[key]
+    end
 
+    def tap
+      yield self
+      self
+    end
 
-      group_classes.map do |klass|
-        type = klass.class_variable_get(:@@type)
+    def resolve(**kwargs)
+      sorted = @interactions.sort_by { |key, interaction| interaction[:order] }
+      sorted.map do |key, interaction|
+        type = interaction[:type]
         hash = {
+          key: key,
           type: type,
-          title: klass.class_variable_get(:@@title),
-          icon: klass.class_variable_get(:@@icon),
-          key: klass.class_variable_get(:@@key),
+          title: interaction[:title],
+          icon: interaction[:icon],
         }
 
         case type
         when :jsonform
-          instance = klass.new(**kwargs)
-          hash[:schema] = instance.schema
-          hash[:uischema] = instance.uischema
+          schema_factory = interaction[:schema]
+          schema = schema_factory.new(**kwargs)
+          hash[:schema] = schema.schema
+          hash[:uischema] = schema.uischema
         end
 
         hash
       end
     end
   end
-
-  require_relative "interaction/base_interaction"
-  require_relative "interaction/analytics_interaction"
-  require_relative "interaction/general_settings_interaction"
 end

@@ -25,11 +25,10 @@ module AtomicAdmin
       render json: { application: json_for(@application) }
     end
 
-    def update_schema
-      render json: AtomicAdmin::Schema.for(
-        Application.find(params[:atomic_application_id]),
-        "update"
-      )
+    def interactions
+      application = Application.find(params[:id])
+      interactions = AtomicAdmin.application_interactions.resolve(application: application)
+      render json: { interactions: interactions }
     end
 
     private

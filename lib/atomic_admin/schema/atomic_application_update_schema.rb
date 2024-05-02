@@ -3,19 +3,8 @@ module AtomicAdmin::Schema
   class AtomicApplicationUpdateSchema
     attr_accessor :application
 
-    def self.for(application)
-      new(application).call
-    end
-
     def initialize(application)
       @application = application
-    end
-
-    def call
-      {
-        schema: schema,
-        uischema: uischema,
-      }
     end
 
     def schema

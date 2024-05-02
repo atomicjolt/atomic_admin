@@ -12,7 +12,9 @@ AtomicAdmin::Engine.routes.draw do
   resources :atomic_tenant_client_id_strategy
 
   resources :atomic_applications do
-    get "update_schema", to: "atomic_applications#update_schema"
+    member do
+      get :interactions
+    end
 
     resources :atomic_application_instances do
       member do
