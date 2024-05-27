@@ -43,6 +43,28 @@ module AtomicAdmin
       render json: { application_instance: json_for(@application_instance) }
     end
 
+    def create
+      instance = ApplicationInstance.new(application_instance_params)
+
+      if instance.save
+        render json: { application_instance: json_for(instance) }
+      else
+        render json: { errors: instance.errors }, status: 422
+      end
+    end
+
+    def update
+      instance = ApplicationInstance.find(params[:id])
+      instance.update(application_instance_params)
+      byebug
+
+      if instance.save
+        render json: { application_instance: json_for(instance) }
+      else
+        render json: { errors: instance.errors }, status: 422
+      end
+    end
+
     def interactions
       instance = ApplicationInstance.find(params[:id])
       interactions = AtomicAdmin.application_instance_interactions.resolve(application_instance: instance)
@@ -87,6 +109,32 @@ module AtomicAdmin
 
     def search
       params[:search]
+    end
+
+    def application_instance_params
+      params.permit(
+        :site_id,
+        :lti_secret,
+        :lti_key,
+        :canvas_token,
+        :disabled_at,
+        :anonymous,
+        :rollbar_enabled,
+        :paid_at,
+        :domain,
+        :use_scoped_developer_key,
+        :language,
+        :nickname,
+        :primary_contact,
+        :trial_notes,
+        :trial_users,
+        :trial_end_date,
+        :trial_start_date,
+        :license_type,
+        :license_notes,
+        :licensed_users,
+        :license_end_date,
+      )
     end
   end
 end
