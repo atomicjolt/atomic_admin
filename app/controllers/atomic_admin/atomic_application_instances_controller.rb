@@ -44,7 +44,8 @@ module AtomicAdmin
     end
 
     def create
-      instance = ApplicationInstance.new(application_instance_params)
+      application = Application.find(params[:atomic_application_id])
+      instance = application.application_instances.new(application_instance_params)
 
       if instance.save
         render json: { application_instance: json_for(instance) }
@@ -56,7 +57,6 @@ module AtomicAdmin
     def update
       instance = ApplicationInstance.find(params[:id])
       instance.update(application_instance_params)
-      byebug
 
       if instance.save
         render json: { application_instance: json_for(instance) }

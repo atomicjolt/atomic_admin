@@ -1,4 +1,5 @@
 require_relative "schema/atomic_application_update_schema"
+require_relative "schema/application_instance_create_schema"
 require_relative "schema/application_instance_schema"
 require_relative "schema/application_instance_configuration_schema"
 require_relative "schema/application_instance_general_settings_schema"
