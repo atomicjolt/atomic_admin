@@ -93,14 +93,14 @@ module AtomicAdmin
     end
 
     def sort_column
-      sortable_columns.include?(params[:column]) ? params[:column] : "created_at"
+      sortable_columns.include?(params[:sort_on]) ? params[:sort_on] : "created_at"
     end
 
     def sort_direction
       {
         "ascending" => "asc",
         "descending" => "desc",
-      }.fetch(params[:direction], "desc")
+      }.fetch(params[:sort_direction], "desc")
     end
 
     def type
