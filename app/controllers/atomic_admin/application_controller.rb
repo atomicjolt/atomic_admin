@@ -5,10 +5,25 @@ module AtomicAdmin
 
     rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
     def record_not_found
-      render json: { message: "Record not found" }, status: 404
+      render_error(:not_found)
     end
 
     private
+
+    def render_error(type, message: nil)
+      case type
+      when :not_found
+        [404, { type: "not_found", message: "Record not found" }]
+      else
+        [500, { type: "unknown", message: "An error occurred" }]
+      end => [status, error]
+
+      if message.present?
+        error[:message] = message
+      end
+
+      render json: error, status: status
+    end
 
     def json_for(resource)
       resource.as_json
