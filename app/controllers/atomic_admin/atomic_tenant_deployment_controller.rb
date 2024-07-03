@@ -9,35 +9,38 @@ module AtomicAdmin
     end
 
     def search
-       tenant_deployments = AtomicTenant::LtiDeployment
-        .where(application_instance_id: params[:application_instance_id])
-        .order(:id)
-        .paginate(page: params[:page], per_page: 30)
+      tenant_deployments = AtomicTenant::LtiDeployment.
+        where(application_instance_id: params[:application_instance_id]).
+        joins("LEFT OUTER JOIN public.atomic_lti_deployments"\
+          " ON atomic_tenant_lti_deployments.iss = atomic_lti_deployments.iss"\
+          " AND atomic_tenant_lti_deployments.deployment_id = atomic_lti_deployments.deployment_id").
+        order(:id).
+        paginate(page: params[:page], per_page: 30)
 
-      page_ids = tenant_deployments.pluck(:iss, :deployment_id)
+      rows = tenant_deployments.pluck(
+        "atomic_tenant_lti_deployments.id",
+        "atomic_tenant_lti_deployments.iss",
+        "atomic_tenant_lti_deployments.deployment_id",
+        "atomic_tenant_lti_deployments.application_instance_id",
+        "atomic_lti_deployments.client_id",
+        "atomic_lti_deployments.platform_guid",
+      )
 
-      pairs = page_ids.reduce({}) do |acc, c| 
-        iss = c[0]
-        deployment_id = c[1]
-
-        acc[iss] = [] if acc[iss].nil?
-
-        acc[iss].push(deployment_id)
-        acc
-      end
-
-      page = pairs.reduce([]) do |acc, pair| 
-        iss = pair[0]
-        deployment_ids = pair[1]
-
-        deployments = AtomicLti.get_deployments(iss: iss, deployment_ids: deployment_ids)
-        acc.concat(deployments)
+      page = rows.map do |row|
+        {
+          id: row[0],
+          iss: row[1],
+          deployment_id: row[2],
+          application_instance_id: row[3],
+          client_id: row[4],
+          platform_guid: row[5],
+        }
       end
 
       render json: {
         deployments: page,
         page: params[:page],
-        total_pages: tenant_deployments.total_pages
+        total_pages: tenant_deployments.total_pages,
       }
     end
 
