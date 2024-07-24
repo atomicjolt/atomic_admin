@@ -4,7 +4,8 @@ module AtomicAdmin
 
     def index
       @sites = Site.all
-      render json: { sites: json_for_collection(filter(@sites, search_col: "url")) }
+      sites, meta = filter(@sites, search_col: "url")
+      render json: { sites: json_for_collection(sites), meta: }
     end
 
     def create

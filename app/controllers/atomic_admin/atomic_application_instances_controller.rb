@@ -1,5 +1,6 @@
 module AtomicAdmin
   class AtomicApplicationInstancesController < ApplicationController
+    include Filtering
 
     def index
       @application_instances = ApplicationInstance.where(application_id: params[:atomic_application_id])
@@ -10,31 +11,11 @@ module AtomicAdmin
           @application_instances.where(paid_at: nil)
         end
 
-    if search.present?
-      @application_instances = @application_instances.
-        where("nickname LIKE ?", "%#{search}%").
-        or(@application_instances.where("lti_key LIKE ?", "%#{search}%"))
-    end
-
-    order_by =
-      if sort_column === "nickname"
-        "LOWER(#{sort_column}) #{sort_direction}"
-      else
-        { sort_column.to_sym => sort_direction.to_sym }
-      end
-
-    @application_instances = @application_instances.
-      order(order_by).
-      paginate(page: params[:page], per_page: 30)
+      @application_instances, meta = filter(@application_instances, search_col: "nickname")
 
       render json: {
         application_instances: json_for_collection(@application_instances),
-        meta: {
-          current_page: @application_instances.current_page,
-          next_page: @application_instances.next_page,
-          prev_page: @application_instances.previous_page,
-          total_pages: @application_instances.total_pages,
-        }
+        meta:
       }
     end
 

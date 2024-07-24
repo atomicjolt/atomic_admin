@@ -23,6 +23,14 @@ module Filtering
 
     relation = relation.paginate(page: params[:page], per_page: params[:per_page])
 
-    relation
+    meta = {
+      current_page: relation.current_page,
+      next_page: relation.next_page,
+      prev_page: relation.previous_page,
+      total_pages: relation.total_pages,
+      total_items: relation.total_entries,
+    }
+
+    [relation, meta]
   end
 end
