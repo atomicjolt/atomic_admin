@@ -4,9 +4,11 @@
 
 module AtomicAdmin
   class AtomicApplicationsController < ApplicationController
+    include Filtering
+
     def index
-      @applications = Application.all
-      render json: { applications:  json_for_collection(@applications.lti) }
+      @applications, meta = filter(Application.all.lti, search_col: "name")
+      render json: { applications:  json_for_collection(@applications.lti), meta: }
     end
 
     def show
