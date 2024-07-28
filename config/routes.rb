@@ -21,6 +21,10 @@ AtomicAdmin::Engine.routes.draw do
       member do
         get :interactions
       end
+
+      resources :atomic_client_id_strategies, controller: 'atomic_tenant_client_id_strategy'
+      resources :atomic_platform_guid_strategies, controller: 'atomic_tenant_platform_guid_strategy'
+      resources :atomic_deployments, controller: 'atomic_tenant_deployment'
     end
   end
 end
