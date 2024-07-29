@@ -53,6 +53,8 @@ module AtomicAdmin::Schema
                   props: {
                     label: "LTI Config XML",
                     isReadOnly: true,
+                    size: "full",
+                    rows: 20,
                   },
                 },
               },
