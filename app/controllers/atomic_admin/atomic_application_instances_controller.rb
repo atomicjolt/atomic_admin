@@ -54,10 +54,14 @@ module AtomicAdmin
 
     private
 
+    def json_for_collection(instances)
+      serializer = ActiveModelSerializers::SerializableResource.new(instances.to_a)
+      serializer.as_json
+    end
+
     def json_for(instance)
-      json = instance.as_json(include: [:site, :application])
-      json.delete("canvas_token")
-      json
+      serializer = ActiveModelSerializers::SerializableResource.new(instance)
+      serializer.as_json
     end
 
     def sortable_columns
