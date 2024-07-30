@@ -1,13 +1,8 @@
 module AtomicAdmin
   class AtomicTenantDeploymentController < ApplicationController
-    def deployment_params
-      params.permit(:iss, :deployment_id, :application_instance_id)
-    end
+    include Filtering
 
-    def find_deployment
-      AtomicTenant::LtiDeployment.find_by(id: params[:id])
-    end
-
+    # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
        tenant_deployments = AtomicTenant::LtiDeployment
         .where(application_instance_id: params[:application_instance_id])
@@ -16,7 +11,7 @@ module AtomicAdmin
 
       page_ids = tenant_deployments.pluck(:iss, :deployment_id)
 
-      pairs = page_ids.reduce({}) do |acc, c| 
+      pairs = page_ids.reduce({}) do |acc, c|
         iss = c[0]
         deployment_id = c[1]
 
@@ -26,7 +21,7 @@ module AtomicAdmin
         acc
       end
 
-      page = pairs.reduce([]) do |acc, pair| 
+      page = pairs.reduce([]) do |acc, pair|
         iss = pair[0]
         deployment_ids = pair[1]
 
@@ -41,17 +36,20 @@ module AtomicAdmin
       }
     end
 
-    # def index
-    #   page = AtomicTenant::LtiDeployment.all.order(:id).paginate(page: params[:page], per_page: 30)
-    #   render json: {
-    #     deployments: page,
-    #     page: params[:page],
-    #     total_pages: page.total_pages
-    #   }
-    # end
+    def index
+      page, meta = filter(
+        AtomicTenant::LtiDeployment.where(application_instance_id:),
+        search_col: "deployment_id",
+      )
+
+      render json: {
+        deployments: page,
+        meta:
+      }
+    end
 
     def create
-      result = AtomicTenant::LtiDeployment.create!(deployment_params)
+      result = AtomicTenant::LtiDeployment.create!({**deployment_params, application_instance_id:})
       render json: { deployment: result }
     end
 
@@ -71,6 +69,20 @@ module AtomicAdmin
       deployment = find_deployment
       deployment.destroy
       render json: { deployment: deployment }
+    end
+
+    private
+
+    def application_instance_id
+      params[:application_instance_id] || params[:atomic_application_instance_id]
+    end
+
+    def deployment_params
+      params.permit(:iss, :deployment_id, :application_instance_id)
+    end
+
+    def find_deployment
+      AtomicTenant::LtiDeployment.find_by(id: params[:id])
     end
   end
 end

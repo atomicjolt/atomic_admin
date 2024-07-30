@@ -55,10 +55,8 @@ module AtomicAdmin
     private
 
     def json_for(instance)
-      json = instance.as_json
-      json[:site] = instance.site.as_json
-      json[:application] = instance.application.as_json
-
+      json = instance.as_json(include: [:site, :application])
+      json.delete("canvas_token")
       json
     end
 
