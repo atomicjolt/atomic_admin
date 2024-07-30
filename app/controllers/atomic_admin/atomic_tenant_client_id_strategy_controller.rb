@@ -2,6 +2,7 @@ module AtomicAdmin
   class AtomicTenantClientIdStrategyController < ApplicationController
     include Filtering
 
+    # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
       page = AtomicTenant::PinnedClientId
         .where(application_instance_id: params[:application_instance_id])

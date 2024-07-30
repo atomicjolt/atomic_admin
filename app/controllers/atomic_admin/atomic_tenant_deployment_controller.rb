@@ -2,6 +2,7 @@ module AtomicAdmin
   class AtomicTenantDeploymentController < ApplicationController
     include Filtering
 
+    # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
        tenant_deployments = AtomicTenant::LtiDeployment
         .where(application_instance_id: params[:application_instance_id])
