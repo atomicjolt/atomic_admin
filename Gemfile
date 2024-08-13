@@ -12,4 +12,5 @@ gem "sprockets-rails"
 # gem "debug", ">= 1.0.0"
 
 gem "atomic_lti", "1.5.0"
-gem 'atomic_tenant', "1.2.0"
+gem "atomic_tenant", "1.2.0"
+gem "httparty"
