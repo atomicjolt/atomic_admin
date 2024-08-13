@@ -20,7 +20,7 @@ module AtomicAdmin::Schema
     def uischema
       {
         type: "Group",
-        label: "XML Configuration",
+        label: "LTI 1.1",
         elements: [
           {
             type: "VerticalLayout",
@@ -41,7 +41,6 @@ module AtomicAdmin::Schema
                 options: {
                   props: {
                     label: "LTI Secret",
-                    isReadOnly: true,
                   },
                 },
               },

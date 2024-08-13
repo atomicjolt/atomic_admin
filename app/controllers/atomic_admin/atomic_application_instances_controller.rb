@@ -112,6 +112,7 @@ module AtomicAdmin
         :license_type,
         :license_notes,
         :licensed_users,
+        :license_start_date,
         :license_end_date,
       )
     end
