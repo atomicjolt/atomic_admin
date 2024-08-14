@@ -6,8 +6,11 @@ module AtomicAdmin
   class AtomicApplicationsController < ApplicationController
     include Filtering
 
+    allowed_sort_columns %w[name]
+    allowed_search_columns %w[name]
+
     def index
-      @applications, meta = filter(Application.all.lti, search_col: "name")
+      @applications, meta = filter(Application.all.lti)
       render json: { applications:  json_for_collection(@applications.lti), meta: }
     end
 

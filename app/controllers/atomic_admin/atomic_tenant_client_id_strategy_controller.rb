@@ -2,6 +2,9 @@ module AtomicAdmin
   class AtomicTenantClientIdStrategyController < ApplicationController
     include Filtering
 
+    allowed_search_columns %w[client_id]
+    allowed_sort_columns %w[client_id]
+
     # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
       page = AtomicTenant::PinnedClientId
@@ -16,7 +19,7 @@ module AtomicAdmin
 
     def index
       query = AtomicTenant::PinnedClientId.where(application_instance_id:)
-      page, meta = filter(query, search_col: "client_id")
+      page, meta = filter(query)
 
       render json: {
         pinned_client_ids: page,

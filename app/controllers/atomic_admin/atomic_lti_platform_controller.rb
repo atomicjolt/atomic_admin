@@ -2,8 +2,11 @@ module AtomicAdmin
   class AtomicLtiPlatformController < ApplicationController
     include Filtering
 
+    allowed_search_columns %w[iss]
+    allowed_sort_columns %w[iss]
+
     def index
-      platforms, meta = filter(AtomicLti::Platform.all, search_col: "iss")
+      platforms, meta = filter(AtomicLti::Platform.all)
 
       render json: { platforms:, meta: }
     end

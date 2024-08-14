@@ -2,6 +2,9 @@ module AtomicAdmin
   class AtomicTenantDeploymentController < ApplicationController
     include Filtering
 
+    allowed_search_columns %w[deployment_id]
+    allowed_sort_columns %w[deployment_id]
+
     # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
        tenant_deployments = AtomicTenant::LtiDeployment
@@ -37,10 +40,7 @@ module AtomicAdmin
     end
 
     def index
-      page, meta = filter(
-        AtomicTenant::LtiDeployment.where(application_instance_id:),
-        search_col: "deployment_id",
-      )
+      page, meta = filter(AtomicTenant::LtiDeployment.where(application_instance_id:))
 
       render json: {
         deployments: page,

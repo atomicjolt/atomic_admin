@@ -2,6 +2,9 @@ module AtomicAdmin
   class AtomicTenantPlatformGuidStrategyController < ApplicationController
     include Filtering
 
+    allowed_search_columns %w[platform_guid]
+    allowed_sort_columns %w[platform_guid]
+
     # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
       page = AtomicTenant::PinnedPlatformGuid
@@ -16,7 +19,7 @@ module AtomicAdmin
 
     def index
       query = AtomicTenant::PinnedPlatformGuid.where(application_instance_id:)
-      page, meta = filter(query, search_col: "platform_guid")
+      page, meta = filter(query)
 
       render json: {
         pinned_platform_guids: page,
