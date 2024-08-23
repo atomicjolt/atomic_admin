@@ -53,6 +53,7 @@ module AtomicAdmin::Schema
     end
 
     def uischema
+      token_preview = @application_instance.canvas_token_preview() || "Not set"
       {
         type: "HorizontalLayout",
         elements: [
@@ -104,7 +105,7 @@ module AtomicAdmin::Schema
                     label: "Canvas Token",
                     options: {
                       props: {
-                        message: "Current Canvas Token: null",
+                        message: "Current Canvas Token: #{token_preview}",
                       },
                     },
                   },

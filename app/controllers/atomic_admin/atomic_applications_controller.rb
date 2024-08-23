@@ -11,7 +11,7 @@ module AtomicAdmin
 
     def index
       @applications, meta = filter(Application.all.lti)
-      render json: { applications:  json_for_collection(@applications.lti), meta: }
+      render json: { applications:  json_for_collection(@applications), meta: }
     end
 
     def show

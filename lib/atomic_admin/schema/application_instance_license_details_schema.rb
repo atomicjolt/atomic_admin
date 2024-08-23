@@ -6,6 +6,11 @@ module AtomicAdmin::Schema
       {
         type: "object",
         properties: {
+          paid_at: {
+            type: ["string", "null"],
+            format: "date-time",
+            title: "Paid Account",
+          },
           license_start_date: {
             type: ["string", "null"],
             format: "date-time",
@@ -25,8 +30,8 @@ module AtomicAdmin::Schema
                 const: "monthly",
               },
               {
-                title: "Annual",
-                const: "annual",
+                title: "Yearly",
+                const: "yearly",
               },
               {
                 title: "FTE",
@@ -49,6 +54,13 @@ module AtomicAdmin::Schema
           {
             type: "VerticalLayout",
             elements: [
+              {
+                type: "Control",
+                scope: "#/properties/paid_at",
+                options: {
+                  format: "checkbox",
+                }
+              },
               {
                 type: "Control",
                 scope: "#/properties/license_start_date",
