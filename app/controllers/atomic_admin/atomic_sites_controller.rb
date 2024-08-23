@@ -2,9 +2,12 @@ module AtomicAdmin
   class AtomicSitesController < ApplicationController
     include Filtering
 
+    allowed_search_columns %w[url]
+    allowed_sort_columns %w[url]
+
     def index
       @sites = Site.all
-      sites, meta = filter(@sites, search_col: "url")
+      sites, meta = filter(@sites)
       render json: { sites: json_for_collection(sites), meta: }
     end
 
@@ -26,8 +29,9 @@ module AtomicAdmin
     end
 
     private
+
     def json_for(site)
-      site.as_json(include: :leads)
+      site.as_json
     end
 
     def create_params

@@ -2,6 +2,9 @@ module AtomicAdmin
   class AtomicApplicationInstancesController < ApplicationController
     include Filtering
 
+    allowed_sort_columns %w[nickname]
+    allowed_search_columns %w[nickname]
+
     def index
       @application_instances = ApplicationInstance.where(application_id: params[:atomic_application_id])
       @application_instances =
@@ -11,7 +14,7 @@ module AtomicAdmin
           @application_instances.where(paid_at: nil)
         end
 
-      @application_instances, meta = filter(@application_instances, search_col: "nickname")
+      @application_instances, meta = filter(@application_instances)
 
       render json: {
         application_instances: json_for_collection(@application_instances),
@@ -38,6 +41,11 @@ module AtomicAdmin
     def update
       instance = ApplicationInstance.find(params[:id])
       instance.update(application_instance_params)
+
+      instance.update(
+        config: params[:config],
+        lti_config: params[:lti_config],
+      )
 
       if instance.save
         render json: { application_instance: json_for(instance) }
@@ -116,6 +124,7 @@ module AtomicAdmin
         :license_type,
         :license_notes,
         :licensed_users,
+        :license_start_date,
         :license_end_date,
       )
     end

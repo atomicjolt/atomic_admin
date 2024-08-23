@@ -16,8 +16,7 @@ module AtomicAdmin::JwtToken
 
         # NOTE: the cached keys only expire when we recieve a kid_not_found error
         keys = Rails.cache.fetch("atomic_admin_jwks") do
-          jwks_raw = Net::HTTP.get URI(@jwks_url)
-          JSON.parse(jwks_raw)
+          HTTParty.get(@jwks_url).parsed_response
         end
 
         JWT::JWK::Set.new(keys).select { |k| k[:use] == "sig" }

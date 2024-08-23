@@ -12,6 +12,7 @@ module AtomicAdmin::Schema
 
       {
         type: "object",
+        required: ["nickname", "site_id", "lti_key", "lti_secret", "domain"],
         properties: {
           nickname: {
             type: "string",
@@ -28,6 +29,7 @@ module AtomicAdmin::Schema
           },
           site_id: {
             type: "number",
+            label: "Site URL",
             oneOf: sites.map do |site|
               {
                 title: site.url,
@@ -56,6 +58,9 @@ module AtomicAdmin::Schema
           lti_config: {
             type: "object",
           },
+          anonymous: {
+            type: "boolean",
+          }
         },
       }
     end
@@ -109,15 +114,39 @@ module AtomicAdmin::Schema
           },
           {
             type: "Control",
+            scope: "#/properties/anonymous",
+            options: {
+              props: {
+                message: "Indicates whether or not user name and email is stored during LTI launch",
+              }
+            }
+          },
+          {
+            type: "Control",
             scope: "#/properties/rollbar_enabled",
+            options: {
+              props: {
+                message: "Indicates whether or not rollbar is enabled for this app instance",
+              }
+            }
           },
           {
             type: "Control",
             scope: "#/properties/use_scoped_developer_key",
+            options: {
+              props: {
+                message: "Indicates this is a paid or trial account",
+              }
+            }
           },
           {
             type: "Control",
             scope: "#/properties/paid_account",
+            options: {
+              props: {
+                message: "Restricts the Canvas tokens generated during oauth to the minimum necessary for this application. This should only be used if the oauth key and secret are populated above and are for a scoped developer key.",
+              }
+            }
           },
           {
             type: "Control",
