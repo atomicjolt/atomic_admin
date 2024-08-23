@@ -42,6 +42,11 @@ module AtomicAdmin
       instance = ApplicationInstance.find(params[:id])
       instance.update(application_instance_params)
 
+      instance.update(
+        config: params[:config],
+        lti_config: params[:lti_config],
+      )
+
       if instance.save
         render json: { application_instance: json_for(instance) }
       else

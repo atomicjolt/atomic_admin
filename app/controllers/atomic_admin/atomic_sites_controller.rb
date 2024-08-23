@@ -29,8 +29,9 @@ module AtomicAdmin
     end
 
     private
+
     def json_for(site)
-      site.as_json(include: :leads)
+      site.as_json
     end
 
     def create_params
