@@ -60,9 +60,6 @@ module AtomicAdmin::Schema
               {
                 type: "Control",
                 scope: "#/properties/site_id",
-                props: {
-                  label: "Site URL",
-                }
               },
               {
                 type: "Control",
