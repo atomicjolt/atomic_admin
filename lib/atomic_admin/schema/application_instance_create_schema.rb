@@ -12,7 +12,7 @@ module AtomicAdmin::Schema
 
       {
         type: "object",
-        required: ["nickname", "site_id", "lti_key", "lti_secret", "domain"],
+        required: ["nickname", "site_id", "lti_key"],
         properties: {
           nickname: {
             type: "string",
@@ -60,6 +60,9 @@ module AtomicAdmin::Schema
               {
                 type: "Control",
                 scope: "#/properties/site_id",
+                props: {
+                  label: "Site"
+                }
               },
               {
                 type: "Control",

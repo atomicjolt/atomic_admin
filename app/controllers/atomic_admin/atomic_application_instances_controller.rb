@@ -24,7 +24,7 @@ module AtomicAdmin
 
     def show
       @application_instance = ApplicationInstance.find(params[:id])
-      render json: { application_instance: json_for(@application_instance) }
+      render json: { application_instance: @application_instance.as_json(include: [:application, :site]) }
     end
 
     def create
