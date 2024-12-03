@@ -24,7 +24,7 @@ module AtomicAdmin
 
     def show
       @application_instance = ApplicationInstance.find(params[:id])
-      render json: { application_instance: @application_instance.as_json(include: [:application, :site]) }
+      render json: { application_instance: json_for(@application_instance) }
     end
 
     def create
@@ -47,6 +47,13 @@ module AtomicAdmin
         lti_config: params[:lti_config],
       )
 
+      if params[:is_paid] && instance.paid_at.nil?
+        instance.paid_at = DateTime.now
+      elsif params[:is_paid] == false && instance.paid_at.present?
+        instance.paid_at = nil
+      end
+
+
       if instance.save
         render json: { application_instance: json_for(instance) }
       else
@@ -58,6 +65,18 @@ module AtomicAdmin
       instance = ApplicationInstance.find(params[:id])
       interactions = AtomicAdmin.application_instance_interactions.resolve(application_instance: instance)
       render json: { interactions: interactions }
+    end
+
+    def json_for(instance)
+      json = instance.as_json(include: [:application, :site])
+
+      json["trial_start_date"] = instance.trial_start_date&.strftime("%Y-%m-%d")
+      json["trial_end_date"] = instance.trial_end_date&.strftime("%Y-%m-%d")
+      json["license_start_date"] = instance.license_start_date&.strftime("%Y-%m-%d")
+      json["license_end_date"] = instance.license_end_date&.strftime("%Y-%m-%d")
+      json["is_paid"] = instance.paid_at.present?
+
+      json
     end
 
     private

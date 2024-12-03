@@ -1,4 +1,3 @@
-
 module AtomicAdmin::Schema
   class AtomicApplicationUpdateSchema
     attr_accessor :application
@@ -19,12 +18,10 @@ module AtomicAdmin::Schema
           },
           oauth_secret: {
             type: ["string", "null"],
-          },
-          default_config: {
-            type: "object",
-          },
-          canvas_api_permissions: {
-            type: "object",
+            secret: {
+              preview: "ouath_secret_preview",
+              value: "oauth_secret"
+            }
           },
         }
       }
@@ -52,26 +49,6 @@ module AtomicAdmin::Schema
           {
             type: "Control",
             scope: "#/properties/oauth_secret",
-          },
-          {
-            type: "Control",
-            scope: "#/properties/default_config",
-            options: {
-              format: "json",
-              props: {
-                size: "full"
-              }
-            }
-          },
-          {
-            type: "Control",
-            scope: "#/properties/canvas_api_permissions",
-            options: {
-              format: "json",
-              props: {
-                size: "full"
-              }
-            }
           },
         ]
       }

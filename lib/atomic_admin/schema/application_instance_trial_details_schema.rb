@@ -8,14 +8,15 @@ module AtomicAdmin::Schema
         properties: {
           trial_start_date: {
             type: ["string", "null"],
-            format: "date-time",
+            format: "date",
           },
           trial_end_date: {
             type: ["string", "null"],
-            format: "date-time",
+            format: "date",
           },
           trial_users: {
             type: ["number", "null"],
+            minimum: 0,
           },
           trial_notes: {
             type: ["string", "null"],

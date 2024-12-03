@@ -41,7 +41,7 @@ module AtomicAdmin
     #   pinned_client_id = find_pinned_client_id
     #   pinned_client_id.update!(pinned_client_id_params)
 
-    #   render json: {pinned_client_id: find_pinned_client_id}
+    #   render json: { pinned_client_id: find_pinned_client_id }
     # end
 
     def destroy

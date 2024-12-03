@@ -36,6 +36,14 @@ module AtomicAdmin
       render json: { interactions: interactions }
     end
 
+    def json_for(application)
+      json = application.as_json.with_indifferent_access
+      secret = json[:oauth_secret]
+      json[:oauth_secret_preview] = secret[0..2] + '*' * (secret.length - 3) if secret
+
+      json
+    end
+
     private
 
     def application_params

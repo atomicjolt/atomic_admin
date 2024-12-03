@@ -6,21 +6,21 @@ module AtomicAdmin::Schema
       {
         type: "object",
         properties: {
-          paid_at: {
-            type: ["string", "null"],
-            format: "date-time",
-            title: "Paid Account",
+          is_paid: {
+            type: "boolean",
+            title: "Paid Account"
           },
           license_start_date: {
             type: ["string", "null"],
-            format: "date-time",
+            format: "date",
           },
           license_end_date: {
             type: ["string", "null"],
-            format: "date-time",
+            format: "date",
           },
           licensed_users: {
             type: ["number", "null"],
+            minimum: 0,
           },
           license_type: {
             type: ["string", "null"],
@@ -56,10 +56,7 @@ module AtomicAdmin::Schema
             elements: [
               {
                 type: "Control",
-                scope: "#/properties/paid_at",
-                options: {
-                  format: "checkbox",
-                }
+                scope: "#/properties/is_paid",
               },
               {
                 type: "Control",
