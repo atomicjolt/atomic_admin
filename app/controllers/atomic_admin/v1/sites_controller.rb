@@ -1,4 +1,4 @@
-module AtomicAdmin
+module AtomicAdmin::V1
   class SitesController < AdminController
     include Filtering
 

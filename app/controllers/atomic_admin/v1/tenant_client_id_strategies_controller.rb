@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class TenantClientIdStrategyController < AdminController
+module AtomicAdmin::V1
+  class TenantClientIdStrategiesController < AdminController
     include Filtering
 
     allowed_search_columns %w[client_id]
@@ -53,7 +53,7 @@ module AtomicAdmin
     private
 
     def application_instance_id
-      params[:application_instance_id] || params[:atomic_application_instance_id]
+      params[:application_instance_id] || params[:application_instance_id]
     end
 
     def pinned_client_id_params

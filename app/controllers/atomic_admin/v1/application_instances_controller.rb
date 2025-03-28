@@ -1,4 +1,4 @@
-module AtomicAdmin
+module AtomicAdmin::V1
   class ApplicationInstancesController < AdminController
     include Filtering
 
@@ -6,7 +6,7 @@ module AtomicAdmin
     allowed_search_columns %w[nickname]
 
     def index
-      @application_instances = ApplicationInstance.where(application_id: params[:atomic_application_id])
+      @application_instances = ApplicationInstance.where(application_id: params[:application_id])
       @application_instances =
         if type == "paid"
           @application_instances.where.not(paid_at: nil)
@@ -28,7 +28,7 @@ module AtomicAdmin
     end
 
     def create
-      application = Application.find(params[:atomic_application_id])
+      application = Application.find(params[:application_id])
       instance = application.application_instances.new(application_instance_params)
 
       if instance.save

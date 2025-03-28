@@ -1,4 +1,4 @@
-module AtomicAdmin
+module AtomicAdmin::V1
   class AdminController < ActionController::API
     include RequireJwtToken
     before_action :only_admins!

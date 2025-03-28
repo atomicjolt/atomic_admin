@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class TenantPlatformGuidStrategyController < AdminController
+module AtomicAdmin::V1
+  class TenantPlatformGuidStrategiesController < AdminController
     include Filtering
 
     allowed_search_columns %w[platform_guid]
@@ -53,11 +53,11 @@ module AtomicAdmin
     private
 
     def application_id
-      params[:application_id] || params[:atomic_application_id]
+      params[:application_id]
     end
 
     def application_instance_id
-      params[:application_instance_id] || params[:atomic_application_instance_id]
+      params[:application_instance_id]
     end
 
     def pinned_platform_guid_params

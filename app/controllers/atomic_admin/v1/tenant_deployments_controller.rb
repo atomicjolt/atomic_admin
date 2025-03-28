@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class TenantDeploymentController < AdminController
+module AtomicAdmin::V1
+  class TenantDeploymentsController < AdminController
     include Filtering
 
     allowed_search_columns %w[deployment_id]
@@ -77,7 +77,7 @@ module AtomicAdmin
     private
 
     def application_instance_id
-      params[:application_instance_id] || params[:atomic_application_instance_id]
+      params[:application_instance_id] || params[:application_instance_id]
     end
 
     def deployment_params

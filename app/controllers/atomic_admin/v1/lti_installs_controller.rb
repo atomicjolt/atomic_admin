@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class LtiInstallController < AdminController
+module AtomicAdmin::V1
+  class LtiInstallsController < AdminController
     def install_params
       params.permit(:iss, :client_id)
     end
