@@ -1,5 +1,5 @@
 module AtomicAdmin
-  class AtomicTenantDeploymentController < ApplicationController
+  class TenantDeploymentController < AdminController
     include Filtering
 
     allowed_search_columns %w[deployment_id]

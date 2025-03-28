@@ -1,5 +1,5 @@
 module AtomicAdmin
-  class AtomicApplicationInstancesController < ApplicationController
+  class ApplicationInstancesController < AdminController
     include Filtering
 
     allowed_sort_columns %w[nickname]

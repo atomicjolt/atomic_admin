@@ -1,5 +1,5 @@
 module AtomicAdmin
-  class AtomicTenantPlatformGuidStrategyController < ApplicationController
+  class TenantPlatformGuidStrategyController < AdminController
     include Filtering
 
     allowed_search_columns %w[platform_guid]

@@ -3,7 +3,7 @@
 # 2. The controllers call into the resource's class with the payloads and it handles the details of the implementation
 
 module AtomicAdmin
-  class AtomicApplicationsController < ApplicationController
+  class ApplicationsController < AdminController
     include Filtering
 
     allowed_sort_columns %w[name]

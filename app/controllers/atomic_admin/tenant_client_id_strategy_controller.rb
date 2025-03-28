@@ -1,5 +1,5 @@
 module AtomicAdmin
-  class AtomicTenantClientIdStrategyController < ApplicationController
+  class TenantClientIdStrategyController < AdminController
     include Filtering
 
     allowed_search_columns %w[client_id]

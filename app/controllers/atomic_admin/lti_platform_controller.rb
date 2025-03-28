@@ -1,5 +1,5 @@
 module AtomicAdmin
-  class AtomicLtiPlatformController < ApplicationController
+  class LtiPlatformController < AdminController
     include Filtering
 
     allowed_search_columns %w[iss]
