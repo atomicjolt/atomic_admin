@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class AtomicSitesController < ApplicationController
+module AtomicAdmin::V1
+  class SitesController < AdminController
     include Filtering
 
     allowed_search_columns %w[url]

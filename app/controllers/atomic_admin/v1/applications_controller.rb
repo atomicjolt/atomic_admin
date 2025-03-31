@@ -1,9 +1,5 @@
-# How do we handle customization of these endpoints?
-# 1. The tools override the controller and add the custom logic
-# 2. The controllers call into the resource's class with the payloads and it handles the details of the implementation
-
-module AtomicAdmin
-  class AtomicApplicationsController < ApplicationController
+module AtomicAdmin::V1
+  class ApplicationsController < AdminController
     include Filtering
 
     allowed_sort_columns %w[name]
