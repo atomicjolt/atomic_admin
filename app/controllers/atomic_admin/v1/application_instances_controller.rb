@@ -22,6 +22,10 @@ module AtomicAdmin::V1
       }
     end
 
+    def stats
+      render json: { stats: [] }
+    end
+
     def show
       @application_instance = ApplicationInstance.find(params[:id])
       render json: { application_instance: json_for(@application_instance) }
