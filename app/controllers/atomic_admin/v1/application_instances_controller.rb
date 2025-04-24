@@ -74,11 +74,12 @@ module AtomicAdmin::V1
     def json_for(instance)
       json = instance.as_json(include: [:application, :site])
 
-      json["trial_start_date"] = instance.trial_start_date&.strftime("%Y-%m-%d")
-      json["trial_end_date"] = instance.trial_end_date&.strftime("%Y-%m-%d")
-      json["license_start_date"] = instance.license_start_date&.strftime("%Y-%m-%d")
-      json["license_end_date"] = instance.license_end_date&.strftime("%Y-%m-%d")
-      json["is_paid"] = instance.paid_at.present?
+      json["trial_start_date"] = instance.trial_start_date&.strftime("%Y-%m-%d") if instance.respond_to?(:trial_start_date)
+      json["trial_end_date"] = instance.trial_end_date&.strftime("%Y-%m-%d") if instance.respond_to?(:trial_end_date)
+      json["license_start_date"] = instance.license_start_date&.strftime("%Y-%m-%d") if instance.respond_to?(:license_start_date)
+      json["license_end_date"] = instance.license_end_date&.strftime("%Y-%m-%d") if instance.respond_to?(:license_end_date)
+      json["is_paid"] = instance.paid_at.present? if instance.respond_to?(:paid_at)
+      json["lti_config_xml"] = instance.lti_config_xml if instance.respond_to?(:lti_config_xml)
 
       json
     end
