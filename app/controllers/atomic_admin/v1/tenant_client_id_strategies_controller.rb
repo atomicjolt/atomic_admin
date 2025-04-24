@@ -1,11 +1,17 @@
-module AtomicAdmin::V1
-  class TenantClientIdStrategiesController < AdminController
-    include Filtering
+module AtomicAdmin
+  class AtomicTenantClientIdStrategyController < ApplicationController
+
+    if AtomicAdmin.client_id_strategy_before_action.present?
+      before_action AtomicAdmin.client_id_strategy_before_action, only: [:create, :update]
+    end
+
+    def pinned_client_id_params
+      params.permit(:iss, :client_id, :application_instance_id)
+    end
 
     allowed_search_columns %w[client_id]
     allowed_sort_columns %w[client_id]
 
-    # NOTE: This endpoint is deprecated & only used by the legacy admin panel
     def search
       page = AtomicTenant::PinnedClientId
         .where(application_instance_id: params[:application_instance_id])
