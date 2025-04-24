@@ -1,35 +1,19 @@
-module AtomicAdmin
-  class AtomicTenantPlatformGuidStrategyController < ApplicationController
-    if AtomicAdmin.platform_guid_strategy_before_action.present?
-      before_action AtomicAdmin.platform_guid_strategy_before_action, only: [:create, :update]
-    end
-
-    def pinned_platform_guid_params
-      params.permit(:iss, :platform_guid, :application_id, :application_instance_id)
-    end
+module AtomicAdmin::V1
+  class TenantPlatformGuidStrategiesController < AdminController
+    include Filtering
 
     allowed_search_columns %w[platform_guid]
     allowed_sort_columns %w[platform_guid]
 
-    def search
-      page = AtomicTenant::PinnedPlatformGuid
-        .where(application_instance_id: params[:application_instance_id])
-        .order(:id).paginate(page: params[:page], per_page: 30)
+    def index
+      query = AtomicTenant::PinnedPlatformGuid.where(application_instance_id:)
+      page, meta = filter(query)
+
       render json: {
         pinned_platform_guids: page,
-        page: params[:page],
-        total_pages: page.total_pages
+        meta:
       }
     end
-
-    # def index
-    #   page = AtomicTenant::PinnedPlatformGuid.all.order(:id).paginate(page: params[:page], per_page: 30)
-    #   render json: {
-    #     pinned_platform_guids: page,
-    #     page: params[:page],
-    #     total_pages: page.total_pages
-    #   }
-    # end
 
     def create
       result = AtomicTenant::PinnedPlatformGuid.create!({**pinned_platform_guid_params, application_instance_id:, application_id:})

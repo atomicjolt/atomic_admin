@@ -1,27 +1,9 @@
-module AtomicAdmin
-  class AtomicTenantClientIdStrategyController < ApplicationController
-
-    if AtomicAdmin.client_id_strategy_before_action.present?
-      before_action AtomicAdmin.client_id_strategy_before_action, only: [:create, :update]
-    end
-
-    def pinned_client_id_params
-      params.permit(:iss, :client_id, :application_instance_id)
-    end
+module AtomicAdmin::V1
+  class TenantClientIdStrategiesController < AdminController
+    include Filtering
 
     allowed_search_columns %w[client_id]
     allowed_sort_columns %w[client_id]
-
-    def search
-      page = AtomicTenant::PinnedClientId
-        .where(application_instance_id: params[:application_instance_id])
-        .order(:id).paginate(page: params[:page], per_page: 30)
-      render json: {
-        pinned_client_ids: page,
-        page: params[:page],
-        total_pages: page.total_pages
-      }
-    end
 
     def index
       query = AtomicTenant::PinnedClientId.where(application_instance_id:)

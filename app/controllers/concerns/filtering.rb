@@ -26,7 +26,7 @@ module Filtering
     params = query_params
     allowed_search_columns = self.class.class_variable_get(:@@allowed_search_columns)
 
-    if params[:search].present? && params[:search_on].present? && allowed_search_columns
+    if params[:search].present? && params[:search_on].present? && allowed_search_columns.include?(params[:search_on])
       relation = relation.where("lower(#{params[:search_on]}) LIKE ?", "%#{params[:search].downcase}%")
     end
 
