@@ -65,6 +65,12 @@ module AtomicAdmin::V1
       end
     end
 
+    def destroy
+      instance = ApplicationInstance.find(params[:id])
+      instance.destroy
+      render json: { success: true }
+    end
+
     def interactions
       instance = ApplicationInstance.find(params[:id])
       interactions = AtomicAdmin.application_instance_interactions.resolve(application_instance: instance)
