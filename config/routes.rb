@@ -1,13 +1,29 @@
 AtomicAdmin::Engine.routes.draw do
-    # namespace :lti do 
-  resources :atomic_lti_platform
-  resources :atomic_lti_install
-  resources :atomic_tenant_deployment
-  post '/atomic_tenant_deployment/search', to: 'atomic_tenant_deployment#search'
+  namespace :api do
+    namespace :admin do
+      namespace :v1 do
+        resources :lti_platforms
+        resources :lti_installs
+        resources :tenant_deployments
+        resources :sites
 
-  resources :atomic_tenant_platform_guid_strategy
-  post '/atomic_tenant_platform_guid_strategy/search', to: 'atomic_tenant_platform_guid_strategy#search'
-  post '/atomic_tenant_client_id_strategy/search', to: 'atomic_tenant_client_id_strategy#search'
+        resources :applications do
+          member do
+            get :interactions
+          end
 
-  resources :atomic_tenant_client_id_strategy
+          resources :application_instances do
+            member do
+              get :interactions
+              get :stats
+            end
+
+            resources :tenant_client_id_strategies
+            resources :tenant_platform_guid_strategies
+            resources :tenant_deployments
+          end
+        end
+      end
+    end
+  end
 end
