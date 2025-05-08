@@ -147,6 +147,7 @@ module AtomicAdmin::V1
         :license_start_date,
         :license_end_date,
         *AtomicAdmin.application_instance_extra_permitted_params,
+        *AtomicAdmin.extra_params[:application_instances] || [],
       )
     end
   end
