@@ -8,6 +8,17 @@ module AtomicAdmin::V1
       render_error(:not_found)
     end
 
+
+    protected
+
+    def json_for(resource)
+      resource.as_json
+    end
+
+    def json_for_collection(collection)
+      collection.map { |resource| json_for(resource) }
+    end
+
     private
 
     def render_error(type, message: nil)
@@ -23,14 +34,6 @@ module AtomicAdmin::V1
       end
 
       render json: error, status: status
-    end
-
-    def json_for(resource)
-      resource.as_json
-    end
-
-    def json_for_collection(collection)
-      collection.map { |resource| json_for(resource) }
     end
 
     def only_admins!

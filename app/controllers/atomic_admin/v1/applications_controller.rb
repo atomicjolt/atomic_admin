@@ -22,7 +22,7 @@ module AtomicAdmin::V1
       @application.default_config = params[:default_config]
       @application.canvas_api_permissions = params[:canvas_api_permissions]
 
-      @application.update!(application_params)
+      @application.update!(update_params)
       render json: { application: json_for(@application) }
     end
 
@@ -40,10 +40,10 @@ module AtomicAdmin::V1
       json
     end
 
-    private
+    protected
 
-    def application_params
-      params.permit(:name, :description, :oauth_key, :oauth_secret)
+    def update_params
+      params.permit!
     end
   end
 end

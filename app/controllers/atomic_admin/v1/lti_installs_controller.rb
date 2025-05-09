@@ -1,19 +1,11 @@
 module AtomicAdmin::V1
   class LtiInstallsController < AdminController
-    def install_params
-      params.permit(:iss, :client_id)
-    end
-
-    def find_install
-      AtomicLti::Install.find_by(id: params[:id])
-    end
-
     def index
       render json: AtomicLti::Install.all.order(:id).paginate(page: params[:page], per_page: 30)
     end
 
     def create
-      AtomicLti::Install.create!(install_params)
+      AtomicLti::Install.create!(create_params)
     end
 
     def show
@@ -23,7 +15,7 @@ module AtomicAdmin::V1
 
     def update
       install = find_install
-      result = install.update!(install_params)
+      result = install.update!(update_params)
       render json: result
     end
 
@@ -31,6 +23,20 @@ module AtomicAdmin::V1
       install = find_install
       install.destroy
       render json: install
+    end
+
+    protected
+
+    def find_install
+      AtomicLti::Install.find_by(id: params[:id])
+    end
+
+    def create_params
+      params.permit!
+    end
+
+    def update_params
+      params.permit!
     end
   end
 end

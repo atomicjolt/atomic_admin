@@ -12,7 +12,7 @@ module AtomicAdmin::V1
     end
 
     def create
-      platform = AtomicLti::Platform.create!(platform_params)
+      platform = AtomicLti::Platform.create!(create_params)
       render json: { platform: platform }
     end
 
@@ -23,7 +23,7 @@ module AtomicAdmin::V1
 
     def update
       platform = find_platform
-      platform.update!(platform_params)
+      platform.update!(update_params)
       render json: { platform: find_platform }
     end
 
@@ -33,10 +33,14 @@ module AtomicAdmin::V1
       render json: platform
     end
 
-    private
+    protected
 
-    def platform_params
-      params.permit(:iss, :jwks_url, :token_url, :oidc_url)
+    def create_params
+      params.permit!
+    end
+
+    def update_params
+      params.permit!
     end
 
     def find_platform

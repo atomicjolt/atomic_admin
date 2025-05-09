@@ -33,7 +33,7 @@ module AtomicAdmin::V1
 
     def create
       application = Application.find(params[:application_id])
-      instance = application.application_instances.new(application_instance_params)
+      instance = application.application_instances.new(create_params)
 
       if instance.save
         render json: { application_instance: json_for(instance) }
@@ -44,7 +44,7 @@ module AtomicAdmin::V1
 
     def update
       instance = ApplicationInstance.find(params[:id])
-      instance.update(application_instance_params)
+      instance.update(update_params)
 
       instance.update(
         config: params[:config],
@@ -90,7 +90,7 @@ module AtomicAdmin::V1
       json
     end
 
-    private
+    protected
 
     def sortable_columns
       [
@@ -122,33 +122,12 @@ module AtomicAdmin::V1
       params[:search]
     end
 
-    def application_instance_params
-      params.permit(
-        :site_id,
-        :lti_secret,
-        :lti_key,
-        :canvas_token,
-        :disabled_at,
-        :anonymous,
-        :rollbar_enabled,
-        :paid_at,
-        :domain,
-        :use_scoped_developer_key,
-        :language,
-        :nickname,
-        :primary_contact,
-        :trial_notes,
-        :trial_users,
-        :trial_end_date,
-        :trial_start_date,
-        :license_type,
-        :license_notes,
-        :licensed_users,
-        :license_start_date,
-        :license_end_date,
-        *AtomicAdmin.application_instance_extra_permitted_params,
-        *AtomicAdmin.extra_params[:application_instances] || [],
-      )
+    def create_params
+      params.permit!
+    end
+
+    def update_params
+      params.permit!
     end
   end
 end

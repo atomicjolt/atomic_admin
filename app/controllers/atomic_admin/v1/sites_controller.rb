@@ -28,18 +28,18 @@ module AtomicAdmin::V1
       render json: { site: json_for(@site) }
     end
 
-    private
+    protected
 
     def json_for(site)
       site.as_json
     end
 
     def create_params
-      params.permit(:url, :oauth_key, :oauth_secret)
+      params.permit!
     end
 
     def update_params
-      params.permit(:url, :oauth_key, :oauth_secret)
+      params.permit!
     end
   end
 end

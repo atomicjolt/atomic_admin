@@ -21,16 +21,9 @@ module AtomicAdmin::V1
     end
 
     def create
-      result = AtomicTenant::PinnedClientId.create!({**pinned_client_id_params, application_instance_id:})
+      result = AtomicTenant::PinnedClientId.create!({**create_params, application_instance_id:})
       render json: { pinned_client_id: result }
     end
-
-    # def update
-    #   pinned_client_id = find_pinned_client_id
-    #   pinned_client_id.update!(pinned_client_id_params)
-
-    #   render json: { pinned_client_id: find_pinned_client_id }
-    # end
 
     def destroy
       pinned_client_id = find_pinned_client_id
@@ -38,14 +31,14 @@ module AtomicAdmin::V1
       render json: { pinned_client_id: pinned_client_id }
     end
 
-    private
+    protected
 
     def application_instance_id
       params[:application_instance_id] || params[:application_instance_id]
     end
 
-    def pinned_client_id_params
-      params.permit(:iss, :client_id, :application_instance_id)
+    def create_params
+      params.permit!
     end
 
     def find_pinned_client_id
