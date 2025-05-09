@@ -46,6 +46,7 @@ module AtomicAdmin::V1
       instance = ApplicationInstance.find(params[:id])
       instance.update(update_params)
 
+      # Handle special params separately
       instance.update(
         config: params[:config],
         lti_config: params[:lti_config],
@@ -123,11 +124,11 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.permit!
+      params.require(:application_instance).permit!
     end
 
     def update_params
-      params.permit!
+      params.require(:application_instance).permit!
     end
   end
 end

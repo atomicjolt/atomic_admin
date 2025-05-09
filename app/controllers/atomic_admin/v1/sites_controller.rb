@@ -35,11 +35,11 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.permit!
+      params.require(:site).permit!
     end
 
     def update_params
-      params.permit!
+      params.require(:site).permit!
     end
   end
 end

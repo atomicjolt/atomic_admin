@@ -43,7 +43,7 @@ module AtomicAdmin::V1
     protected
 
     def update_params
-      params.permit!
+      params.require(:application).permit!
     end
   end
 end

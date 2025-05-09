@@ -38,7 +38,7 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.permit!
+      params.require(:pinned_client_id).permit!
     end
 
     def find_pinned_client_id

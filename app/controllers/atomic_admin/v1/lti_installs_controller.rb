@@ -32,11 +32,11 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.permit!
+      params.require(:install).permit!
     end
 
     def update_params
-      params.permit!
+      params.require(:install).permit!
     end
   end
 end

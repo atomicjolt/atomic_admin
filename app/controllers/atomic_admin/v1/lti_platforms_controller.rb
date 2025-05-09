@@ -36,11 +36,11 @@ module AtomicAdmin::V1
     protected
 
     def create_params
-      params.permit!
+      params.require(:platform).permit!
     end
 
     def update_params
-      params.permit!
+      params.require(:platform).permit!
     end
 
     def find_platform
