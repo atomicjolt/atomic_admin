@@ -13,3 +13,7 @@ gem "sprockets-rails"
 
 gem "atomic_lti", "1.5.0"
 gem 'atomic_tenant', "1.2.0"
+
+
+gem "rack", ">= 2.2.14"
+
