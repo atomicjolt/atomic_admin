@@ -46,18 +46,11 @@ module AtomicAdmin::V1
       instance = ApplicationInstance.find(params[:id])
       instance.update(update_params)
 
-      # Handle special params separately
-      instance.update(
-        config: params[:config],
-        lti_config: params[:lti_config],
-      )
-
-      if params[:is_paid] && instance.paid_at.nil?
+      if params[:application_instance][:is_paid] && instance.paid_at.nil?
         instance.paid_at = DateTime.now
-      elsif params[:is_paid] == false && instance.paid_at.present?
+      elsif params[:application_instance][:is_paid] == false && instance.paid_at.present?
         instance.paid_at = nil
       end
-
 
       if instance.save
         render json: { application_instance: json_for(instance) }
@@ -124,11 +117,11 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.require(:application_instance).permit!
+      params.require(:application_instance).except(:is_paid, :lti_config_xml, :site, :application).permit!
     end
 
     def update_params
-      params.require(:application_instance).permit!
+      create_params
     end
   end
 end
