@@ -10,6 +10,7 @@ module AtomicAdmin
   mattr_accessor :internal_secret
   mattr_accessor :application_interactions, default: AtomicAdmin::Interaction::Manager.new
   mattr_accessor :application_instance_interactions, default: AtomicAdmin::Interaction::Manager.new
+  mattr_accessor :authenticating_base_controller_class, default: nil
 
   def self.configure
     yield self
