@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    atomic_admin (2.0.0.beta.2)
+    atomic_admin (2.0.0.beta.3)
       rails (>= 7.0, < 9.0)
 
 GEM
