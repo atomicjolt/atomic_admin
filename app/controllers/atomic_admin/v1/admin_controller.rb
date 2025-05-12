@@ -1,13 +1,12 @@
 module AtomicAdmin::V1
   class AdminController < ActionController::API
     include RequireJwtToken
-    before_action :only_admins!
+    before_action :validate_admin_token
 
     rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
     def record_not_found
       render_error(:not_found)
     end
-
 
     protected
 
@@ -34,12 +33,6 @@ module AtomicAdmin::V1
       end
 
       render json: error, status: status
-    end
-
-    def only_admins!
-      return if is_atomic_admin?
-
-      user_not_authorized if current_user.blank? && !current_user.admin?
     end
 
     def user_not_authorized(message = "Not Authorized")
