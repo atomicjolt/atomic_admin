@@ -2,8 +2,8 @@ module AtomicAdmin::V1
   class TenantPlatformGuidStrategiesController < AdminController
     include Filtering
 
-    allowed_search_columns %w[platform_guid]
-    allowed_sort_columns %w[platform_guid]
+    allowed_search_columns %w[platform_guid, iss]
+    allowed_sort_columns %w[platform_guid, iss]
 
     def index
       query = AtomicTenant::PinnedPlatformGuid.where(application_instance_id:)

@@ -2,8 +2,8 @@ module AtomicAdmin::V1
   class TenantDeploymentsController < AdminController
     include Filtering
 
-    allowed_search_columns %w[deployment_id]
-    allowed_sort_columns %w[deployment_id]
+    allowed_search_columns %w[deployment_id, iss]
+    allowed_sort_columns %w[deployment_id, iss]
 
     def index
       page, meta = filter(AtomicTenant::LtiDeployment.where(application_instance_id:))
