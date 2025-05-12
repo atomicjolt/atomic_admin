@@ -20,7 +20,7 @@ AtomicAdmin::Engine.routes.draw do
             resources :tenant_client_id_strategies
             resources :tenant_platform_guid_strategies
             resources :tenant_deployments
-            resources :analytics
+            resources :stats
           end
         end
       end

@@ -14,7 +14,7 @@ module AtomicAdmin::Interaction
       if @interactions[key][:type] == :analytics && @interactions[key][:controller].present?
         controller_class = @interactions[key][:controller]
         Rails.application.config.to_prepare do
-          AtomicAdmin::Api::Admin::V1.const_set(:AnalyticsController, controller_class.constantize)
+          AtomicAdmin::Api::Admin::V1.const_set(:StatsController, controller_class.constantize)
         end
       end
       @curr_index += 1
