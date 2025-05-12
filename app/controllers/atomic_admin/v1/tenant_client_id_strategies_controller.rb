@@ -2,8 +2,8 @@ module AtomicAdmin::V1
   class TenantClientIdStrategiesController < AdminController
     include Filtering
 
-    allowed_search_columns %w[client_id]
-    allowed_sort_columns %w[client_id]
+    allowed_search_columns %w[client_id, iss]
+    allowed_sort_columns %w[client_id, iss]
 
     def index
       query = AtomicTenant::PinnedClientId.where(application_instance_id:)
