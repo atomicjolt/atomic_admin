@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class TenantPlatformGuidStrategiesController < AdminController
-    include Filtering
+    include AtomicAdmin::Filtering
 
     allowed_search_columns %w[platform_guid, iss]
     allowed_sort_columns %w[platform_guid, iss]

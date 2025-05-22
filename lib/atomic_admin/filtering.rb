@@ -1,4 +1,4 @@
-module Filtering
+module AtomicAdmin::Filtering
   extend ActiveSupport::Concern
 
   included do

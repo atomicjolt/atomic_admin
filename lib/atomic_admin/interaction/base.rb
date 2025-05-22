@@ -19,9 +19,5 @@ module AtomicAdmin::Interaction
         icon: icon,
       }
     end
-
-
-    def to_prepare
-    end
   end
 end

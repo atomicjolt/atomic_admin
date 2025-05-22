@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class TenantDeploymentsController < AdminController
-    include Filtering
+    include AtomicAdmin::Filtering
 
     allowed_search_columns %w[deployment_id, iss]
     allowed_sort_columns %w[deployment_id, iss]

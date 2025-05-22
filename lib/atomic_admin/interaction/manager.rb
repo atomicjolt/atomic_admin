@@ -47,13 +47,11 @@ module AtomicAdmin::Interaction
     end
 
 
-    def as_json(**kwargs)
+    def resolve(**kwargs)
       sorted = @interactions.sort_by { |key, interaction| interaction.order }
       sorted.map do |key, interaction|
         interaction.resolve(**kwargs)
       end
     end
-
-    alias resolve as_json
   end
 end
