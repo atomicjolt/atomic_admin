@@ -39,7 +39,6 @@ module AtomicAdmin::V1
     end
 
     def update_params
-      binding.break
       params.require(:site).permit!
     end
   end
