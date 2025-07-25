@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class TenantClientIdStrategiesController < AdminController
-    include Filtering
+    include AtomicAdmin::Filtering
 
     allowed_search_columns %w[client_id, iss]
     allowed_sort_columns %w[client_id, iss]

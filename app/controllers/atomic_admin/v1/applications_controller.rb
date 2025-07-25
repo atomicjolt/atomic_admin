@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class ApplicationsController < AdminController
-    include Filtering
+    include AtomicAdmin::Filtering
 
     allowed_sort_columns %w[name]
     allowed_search_columns %w[name]

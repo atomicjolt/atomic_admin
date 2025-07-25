@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class SitesController < AdminController
-    include Filtering
+    include AtomicAdmin::Filtering
 
     allowed_search_columns %w[url]
     allowed_sort_columns %w[url]

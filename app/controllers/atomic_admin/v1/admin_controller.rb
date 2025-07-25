@@ -1,6 +1,7 @@
 module AtomicAdmin::V1
   class AdminController < ActionController::API
     include RequireJwtToken
+
     before_action :validate_admin_token
 
     rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
