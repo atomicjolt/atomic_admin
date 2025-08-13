@@ -15,7 +15,7 @@ module AtomicAdmin
           " ON atomic_tenant_lti_deployments.iss = atomic_lti_deployments.iss"\
           " AND atomic_tenant_lti_deployments.deployment_id = atomic_lti_deployments.deployment_id").
         order(:id).
-        paginate(page: params[:page], per_page: 30)
+        paginate(page: params[:page], per_page: params[:per_page] || 30)
 
       rows = tenant_deployments.pluck(
         "atomic_tenant_lti_deployments.id",
