@@ -15,7 +15,7 @@ module AtomicAdmin
     def search
       page = AtomicTenant::PinnedPlatformGuid
         .where(application_instance_id: params[:application_instance_id])
-        .order(:id).paginate(page: params[:page], per_page: 30)
+        .order(:id).paginate(page: params[:page], per_page: params[:per_page] || 30)
       render json: {
         pinned_platform_guids: page,
         page: params[:page],
