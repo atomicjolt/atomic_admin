@@ -46,6 +46,9 @@ module AtomicAdmin::Interaction
           schema = schema_factory.new(**kwargs)
           hash[:schema] = schema.schema
           hash[:uischema] = schema.uischema
+        when :launch
+          hash[:launch_url] = interaction[:launch_url].call(**kwargs)
+          hash[:aud] = interaction[:aud]
         end
 
         hash
