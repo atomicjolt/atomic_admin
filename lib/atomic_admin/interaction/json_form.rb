@@ -1,17 +1,17 @@
 module AtomicAdmin::Interaction
   class JsonForm < AtomicAdmin::Interaction::Base
 
-    def initialize(schema:, **kwargs)
+    def initialize(launch:, aud:, **kwargs)
       super(**kwargs)
-      @schema_factory = schema
+      @launch = launch
+      @aud = aud
     end
 
     def resolve(**kwargs)
       hash = super(**kwargs)
 
-      schema = @schema_factory.new(**kwargs)
-      hash[:schema] = schema.schema
-      hash[:uischema] = schema.uischema
+      hash[:launch_url] = @launch.call(**kwargs)
+      hash[:aud] = @aud
 
       hash
     end

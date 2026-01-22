@@ -6,6 +6,7 @@ module AtomicAdmin::Interaction
       analytics: AtomicAdmin::Interaction::Analytics,
       jsonform: AtomicAdmin::Interaction::JsonForm,
       resource: AtomicAdmin::Interaction::Resource,
+      launch: AtomicAdmin::Interaction::Launch,
     }.freeze
 
     def initialize
