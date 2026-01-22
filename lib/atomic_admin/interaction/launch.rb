@@ -1,16 +1,17 @@
 module AtomicAdmin::Interaction
   class Launch < AtomicAdmin::Interaction::Base
 
-    def initialize(schema:, **kwargs)
+    def initialize(launch:, aud:, **kwargs)
       super(**kwargs)
-      @schema_factory = schema
+      @launch = launch
+      @aud = aud
     end
 
     def resolve(**kwargs)
       hash = super(**kwargs)
 
-      hash[:launch_url] = interaction[:launch_url].call(**kwargs)
-      hash[:aud] = interaction[:aud]
+      hash[:launch_url] = @launch.call(**kwargs)
+      hash[:aud] = @aud
 
       hash
     end

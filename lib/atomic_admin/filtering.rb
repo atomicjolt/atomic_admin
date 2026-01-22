@@ -27,7 +27,8 @@ module AtomicAdmin::Filtering
     allowed_search_columns = self.class.class_variable_get(:@@allowed_search_columns)
 
     if params[:search].present? && params[:search_on].present? && allowed_search_columns.include?(params[:search_on])
-      relation = relation.where("lower(#{params[:search_on]}) LIKE ?", "%#{params[:search].downcase}%")
+      table_name = relation.table_name
+      relation = relation.where("lower(#{table_name}.#{params[:search_on]}) LIKE ?", "%#{params[:search].downcase}%")
     end
 
     allowed_sort_columns = self.class.class_variable_get(:@@allowed_sort_columns)
