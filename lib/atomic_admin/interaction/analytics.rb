@@ -6,7 +6,7 @@ module AtomicAdmin::Interaction
       @controller = controller
 
       Rails.application.config.to_prepare do
-        AtomicAdmin::Api::Admin::V1.const_set(:StatsController, @controller.constantize)
+        AtomicAdmin::Api::Admin::V1.const_set(:StatsController, controller.constantize)
       end
     end
   end
