@@ -1,3 +1,3 @@
 module AtomicAdmin
-  VERSION = "2.0.0.beta.5".freeze
+  VERSION = "2.0.0.beta.6".freeze
 end
