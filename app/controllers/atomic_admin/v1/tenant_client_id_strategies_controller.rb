@@ -5,6 +5,8 @@ module AtomicAdmin::V1
     allowed_search_columns %w[client_id, iss]
     allowed_sort_columns %w[client_id, iss]
 
+    before_action :check_restrictions, only: %i[create]
+
     def index
       query = AtomicTenant::PinnedClientId.where(application_instance_id:)
       page, meta = filter(query)
@@ -43,6 +45,33 @@ module AtomicAdmin::V1
 
     def find_pinned_client_id
       AtomicTenant::PinnedClientId.find_by(id: params[:id])
+    end
+
+    def check_restrictions
+      return if interaction.nil?
+
+      if interaction.data[:restricted_client_id_prefixes]
+        prefixes = interaction.data[:restricted_client_id_prefixes]
+
+        prefixes.each do |prefix|
+          if create_params[:iss] == prefix[:iss] && create_params[:client_id].start_with?(prefix[:prefix])
+            render json: { error: prefix[:reason] }, status: :forbidden
+            return
+          end
+        end
+      end
+
+      if interaction.data[:restricted_client_id_issuers]
+        issuers = interaction.data[:restricted_client_id_issuers]
+        if issuers.any? { |issuer| create_params[:iss] == issuer }
+          render json: { error: "This ISS is blocked from client_id pinning. Pin by deployment instead." }, status: :forbidden
+          return
+        end
+      end
+    end
+
+    def interaction
+      @interaction ||= AtomicAdmin.application_instance_interactions.for_type(:lti_advantage).first
     end
   end
 end
