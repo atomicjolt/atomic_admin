@@ -36,6 +36,11 @@ AtomicAdmin::Engine.routes.draw do
             resources :tenant_platform_guid_strategies
             resources :tenant_deployments
             resources :stats
+            resources :users do
+              collection do
+                post :bulk_update
+              end
+            end
 
             AtomicAdmin.application_instance_interactions.for_type(:resource).each do |interaction|
               controller_name = interaction.key.to_s.pluralize
