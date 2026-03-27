@@ -7,6 +7,7 @@ module AtomicAdmin::Interaction
       jsonform: AtomicAdmin::Interaction::JsonForm,
       resource: AtomicAdmin::Interaction::Resource,
       launch: AtomicAdmin::Interaction::Launch,
+      readonly: AtomicAdmin::Interaction::Readonly,
     }.freeze
 
     def initialize
