@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    atomic_admin (2.0.0.beta.5)
+    atomic_admin (2.0.0.beta.7)
       rails (>= 7.0, < 9.0)
 
 GEM
@@ -132,6 +132,8 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
+    nokogiri (1.18.8-aarch64-linux-gnu)
+      racc (~> 1.4)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-darwin)
@@ -197,6 +199,7 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
+    sqlite3 (2.6.0-aarch64-linux-gnu)
     sqlite3 (2.6.0-arm64-darwin)
     sqlite3 (2.6.0-x86_64-darwin)
     sqlite3 (2.6.0-x86_64-linux)
@@ -213,6 +216,7 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-21
   arm64-darwin-23
   x86_64-darwin-22
