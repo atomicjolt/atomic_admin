@@ -3,11 +3,11 @@ require_relative "lib/atomic_admin/version"
 Gem::Specification.new do |spec|
   spec.name        = "atomic_admin"
   spec.version     = AtomicAdmin::VERSION
-  spec.authors     = ["Nick Benoit"]
-  spec.email       = ["nick.benoit@atomicjolt.com"]
+  spec.authors     = ["Nick Benoit", "Sean Collings"]
+  spec.email       = ["nick.benoit@atomicjolt.com", "sean.collings@atomicjolt.com"]
   spec.homepage    = "https://github.com/atomicjolt/atomic_admin/"
-  spec.summary     = "Engine to provide apis that power the atomic jolt admin app"
-  spec.description = "Engine to provide apis that power the atomic jolt admin app"
+  spec.summary     = "Engine to provide apis that power the Atomic Jolt admin app"
+  spec.description = "Engine to provide apis that power the Atomic Jolt admin app"
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
