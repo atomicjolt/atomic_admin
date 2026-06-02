@@ -19,4 +19,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.0", "< 9.0"
+  spec.add_dependency "atomic_lti", ">= 1.5.0", "< 2.0.0"
+  spec.add_dependency "atomic_tenant", ">= 1.2.0", "< 2.0.0"
+  spec.add_dependency "httparty", ">= 0.24.0", "< 1.0.0"
 end
