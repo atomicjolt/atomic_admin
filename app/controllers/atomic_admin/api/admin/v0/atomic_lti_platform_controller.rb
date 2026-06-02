@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class AtomicLtiPlatformController < ApplicationController
+module AtomicAdmin::Api::Admin::V0
+  class AtomicLtiPlatformController < AdminController
     def platform_params
       params.permit(:iss, :jwks_url, :token_url, :oidc_url)
     end

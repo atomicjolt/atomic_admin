@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class AtomicTenantPlatformGuidStrategyController < ApplicationController
+module AtomicAdmin::Api::Admin::V0
+  class AtomicTenantPlatformGuidStrategyController < AdminController
     if AtomicAdmin.platform_guid_strategy_before_action.present?
       before_action AtomicAdmin.platform_guid_strategy_before_action, only: [:create, :update]
     end

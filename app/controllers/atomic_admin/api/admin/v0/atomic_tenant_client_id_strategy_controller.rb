@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class AtomicTenantClientIdStrategyController < ApplicationController
+module AtomicAdmin::Api::Admin::V0
+  class AtomicTenantClientIdStrategyController < AdminController
 
     if AtomicAdmin.client_id_strategy_before_action.present?
       before_action AtomicAdmin.client_id_strategy_before_action, only: [:create, :update]

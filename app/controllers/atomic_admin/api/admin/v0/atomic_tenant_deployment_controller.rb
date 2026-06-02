@@ -1,5 +1,5 @@
-module AtomicAdmin
-  class AtomicTenantDeploymentController < ApplicationController
+module AtomicAdmin::Api::Admin::V0
+  class AtomicTenantDeploymentController < AdminController
     def deployment_params
       params.permit(:iss, :deployment_id, :application_instance_id)
     end
