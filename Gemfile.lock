@@ -227,6 +227,7 @@ DEPENDENCIES
   atomic_lti (= 1.5.0)
   atomic_tenant (= 1.2.0)
   httparty
+  rack (>= 2.2.14)
   sprockets-rails
   sqlite3
 
