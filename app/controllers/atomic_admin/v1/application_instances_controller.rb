@@ -32,6 +32,7 @@ module AtomicAdmin::V1
     def create
       application = Application.find(params[:application_id])
       instance = application.application_instances.new(create_params)
+      @stats = get_stats_for_instances([instance])
 
       if instance.save
         render json: { application_instance: json_for(instance) }
@@ -43,6 +44,7 @@ module AtomicAdmin::V1
     def update
       instance = ApplicationInstance.find(params[:id])
       instance.update(update_params)
+      @stats = get_stats_for_instances([instance])
 
       if params[:application_instance][:is_paid] && instance.paid_at.nil?
         instance.paid_at = DateTime.now
@@ -97,6 +99,7 @@ module AtomicAdmin::V1
       json["trial_end_date"] = instance.trial_end_date&.strftime("%Y-%m-%d") if instance.respond_to?(:trial_end_date)
       json["license_start_date"] = instance.license_start_date&.strftime("%Y-%m-%d") if instance.respond_to?(:license_start_date)
       json["license_end_date"] = instance.license_end_date&.strftime("%Y-%m-%d") if instance.respond_to?(:license_end_date)
+      json["paid_at"] = instance.paid_at&.strftime("%Y-%m-%d") if instance.respond_to?(:paid_at)
       json["is_paid"] = instance.paid_at.present? if instance.respond_to?(:paid_at)
       json["lti_config_xml"] = instance.lti_config_xml if instance.respond_to?(:lti_config_xml)
       json["request_stats"] = request_stats(instance)
