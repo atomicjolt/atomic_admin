@@ -10,7 +10,7 @@ module AtomicAdmin::Schema
             type: "boolean",
             title: "Paid Account"
           },
-          license_start_date: {
+          paid_at: {
             type: ["string", "null"],
             format: "date",
           },
@@ -57,10 +57,12 @@ module AtomicAdmin::Schema
               {
                 type: "Control",
                 scope: "#/properties/is_paid",
+
               },
               {
                 type: "Control",
-                scope: "#/properties/license_start_date",
+                scope: "#/properties/paid_at",
+                label: "License Start Date",
                 options: {
                   format: "date",
                 },
