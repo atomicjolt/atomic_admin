@@ -15,6 +15,7 @@ module AtomicAdmin::V1
         end
 
       @application_instances, meta = filter(@application_instances)
+      @stats = get_stats_for_instances(@application_instances)
 
       render json: {
         application_instances: json_for_collection(@application_instances),
@@ -24,6 +25,7 @@ module AtomicAdmin::V1
 
     def show
       @application_instance = ApplicationInstance.find(params[:id])
+      @stats = get_stats_for_instances([@application_instance])
       render json: { application_instance: json_for(@application_instance) }
     end
 
@@ -67,6 +69,27 @@ module AtomicAdmin::V1
       render json: { interactions: interactions }
     end
 
+    def get_stats_for_instances(instances)
+      tenants = instances.pluck(:tenant)
+      stats = {}
+      stats[:errors] = RequestStatistic.total_errors_grouped(tenants) if defined?(RequestStatistic)
+      stats[:unique_users] = CachedUniqueUsersByContractDate.unique_users_by_contract_date(instances) if defined?(CachedUniqueUsersByContractDate)
+      stats[:max_users_month] = CachedUniqueUsersByMonth.max_monthly_unique_users(instances) if defined?(CachedUniqueUsersByMonth)
+
+      stats
+    end
+
+    def request_stats(instance)
+      tenant = instance.tenant
+
+      {
+        unique_users_in_contract: @stats.dig(:unique_users, tenant) || 0,
+        day_1_errors: @stats.dig(:errors, 0, tenant) || 0,
+        day_7_errors: @stats.dig(:errors, 7, tenant) || 0,
+        max_users_month: @stats.dig(:max_users_month, tenant) || 0,
+      }
+    end
+
     def json_for(instance)
       json = instance.as_json(include: [:application, :site])
 
@@ -76,6 +99,7 @@ module AtomicAdmin::V1
       json["license_end_date"] = instance.license_end_date&.strftime("%Y-%m-%d") if instance.respond_to?(:license_end_date)
       json["is_paid"] = instance.paid_at.present? if instance.respond_to?(:paid_at)
       json["lti_config_xml"] = instance.lti_config_xml if instance.respond_to?(:lti_config_xml)
+      json["request_stats"] = request_stats(instance)
 
       json
     end
