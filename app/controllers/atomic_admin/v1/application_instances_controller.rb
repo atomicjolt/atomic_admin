@@ -140,7 +140,7 @@ module AtomicAdmin::V1
     end
 
     def create_params
-      params.require(:application_instance).except(:is_paid, :lti_config_xml, :site, :application).permit!
+      params.require(:application_instance).except(:is_paid, :lti_config_xml, :site, :application, :request_stats).permit!
     end
 
     def update_params
