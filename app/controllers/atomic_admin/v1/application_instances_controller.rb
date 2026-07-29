@@ -99,8 +99,11 @@ module AtomicAdmin::V1
 
       {
         unique_users_in_contract: @stats.dig(:unique_users, tenant) || 0,
+        # total_errors_grouped returns one tenant => count hash per window,
+        # ordered [today, 7 days, 30 days, 365 days]. These are array indexes,
+        # not day counts.
         day_1_errors: @stats.dig(:errors, 0, tenant) || 0,
-        day_7_errors: @stats.dig(:errors, 7, tenant) || 0,
+        day_7_errors: @stats.dig(:errors, 1, tenant) || 0,
         max_users_month: @stats.dig(:max_users_month, tenant) || 0,
       }
     end
