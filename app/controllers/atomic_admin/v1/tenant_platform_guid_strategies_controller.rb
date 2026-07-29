@@ -34,8 +34,12 @@ module AtomicAdmin::V1
 
     def destroy
       pinned_platform_guid = find_pinned_platform_guid
-      pinned_platform_guid.destroy
-      render json: { pinned_platform_guid: pinned_platform_guid }
+
+      if pinned_platform_guid.destroy
+        render json: { pinned_platform_guid: pinned_platform_guid }
+      else
+        render json: { errors: pinned_platform_guid.errors }, status: 422
+      end
     end
 
     protected

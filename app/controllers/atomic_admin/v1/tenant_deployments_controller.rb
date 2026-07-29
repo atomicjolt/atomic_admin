@@ -26,8 +26,12 @@ module AtomicAdmin::V1
 
     def destroy
       deployment = find_deployment
-      deployment.destroy
-      render json: { deployment: deployment }
+
+      if deployment.destroy
+        render json: { deployment: deployment }
+      else
+        render json: { errors: deployment.errors }, status: 422
+      end
     end
 
     protected

@@ -29,8 +29,12 @@ module AtomicAdmin::V1
 
     def destroy
       pinned_client_id = find_pinned_client_id
-      pinned_client_id.destroy
-      render json: { pinned_client_id: pinned_client_id }
+
+      if pinned_client_id.destroy
+        render json: { pinned_client_id: pinned_client_id }
+      else
+        render json: { errors: pinned_client_id.errors }, status: 422
+      end
     end
 
     protected

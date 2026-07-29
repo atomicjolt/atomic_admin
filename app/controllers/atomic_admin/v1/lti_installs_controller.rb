@@ -21,8 +21,12 @@ module AtomicAdmin::V1
 
     def destroy
       install = find_install
-      install.destroy
-      render json: install
+
+      if install.destroy
+        render json: install
+      else
+        render json: { errors: install.errors }, status: 422
+      end
     end
 
     protected

@@ -29,8 +29,12 @@ module AtomicAdmin::V1
 
     def destroy
       platform = find_platform
-      platform.destroy
-      render json: platform
+
+      if platform.destroy
+        render json: platform
+      else
+        render json: { errors: platform.errors }, status: 422
+      end
     end
 
     protected
