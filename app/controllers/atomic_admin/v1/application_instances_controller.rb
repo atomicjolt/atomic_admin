@@ -75,8 +75,21 @@ module AtomicAdmin::V1
       render json: { interactions: interactions }
     end
 
+    # Host apps store the tenant on an application instance in one of two ways:
+    # older schemas have a `tenant` string column, newer ones have `tenant_key`
+    # plus a `tenant` association. Returns nil if the app has neither, in which
+    # case we skip stats rather than raising.
+    def tenant_column
+      return @tenant_column if defined?(@tenant_column)
+
+      columns = ApplicationInstance.column_names
+      @tenant_column = ["tenant", "tenant_key"].find { |column| columns.include?(column) }&.to_sym
+    end
+
     def get_stats_for_instances(instances)
-      tenants = instances.pluck(:tenant)
+      return {} if tenant_column.nil?
+
+      tenants = instances.pluck(tenant_column)
       stats = {}
       stats[:errors] = RequestStatistic.total_errors_grouped(tenants) if defined?(RequestStatistic)
       stats[:unique_users] = CachedUniqueUsersByContractDate.unique_users_by_contract_date(instances) if defined?(CachedUniqueUsersByContractDate)
@@ -86,12 +99,15 @@ module AtomicAdmin::V1
     end
 
     def request_stats(instance)
-      tenant = instance.tenant
+      tenant = instance[tenant_column] if tenant_column
 
       {
         unique_users_in_contract: @stats.dig(:unique_users, tenant) || 0,
+        # total_errors_grouped returns one tenant => count hash per window,
+        # ordered [today, 7 days, 30 days, 365 days]. These are array indexes,
+        # not day counts.
         day_1_errors: @stats.dig(:errors, 0, tenant) || 0,
-        day_7_errors: @stats.dig(:errors, 7, tenant) || 0,
+        day_7_errors: @stats.dig(:errors, 1, tenant) || 0,
         max_users_month: @stats.dig(:max_users_month, tenant) || 0,
       }
     end
