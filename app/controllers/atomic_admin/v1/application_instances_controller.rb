@@ -61,8 +61,12 @@ module AtomicAdmin::V1
 
     def destroy
       instance = ApplicationInstance.find(params[:id])
-      instance.destroy
-      render json: { success: true }
+
+      if destroy_instance(instance)
+        render json: { success: true }
+      else
+        render json: { errors: instance.errors }, status: 422
+      end
     end
 
     def interactions
@@ -108,6 +112,33 @@ module AtomicAdmin::V1
     end
 
     protected
+
+    # Deletes an application instance.
+    #
+    # Host apps whose ApplicationInstance implements soft-delete semantics get
+    # them automatically. This matters because a hard destroy strands the
+    # Apartment tenant schema along with any tenant-keyed data (request
+    # statistics and the like), and removes the only row naming that tenant --
+    # which hides it from reapers that discover tenants by grouping
+    # ApplicationInstance rows, making the orphan permanent rather than delayed.
+    #
+    # Override this method for anything more involved, such as notifying an
+    # external service before deleting.
+    #
+    # Returns truthy on success. Note that #soft_delete is typically implemented
+    # with #update, so it runs validations: an instance that is invalid for
+    # unrelated reasons will return false here rather than being deleted.
+    def destroy_instance(instance)
+      return instance.soft_delete if instance.respond_to?(:soft_delete)
+
+      Rails.logger.warn(
+        "AtomicAdmin: #{instance.class} does not respond to #soft_delete, falling back to a hard " \
+        "destroy. This may orphan the tenant schema and tenant-keyed data. Define " \
+        "#soft_delete on #{instance.class} to opt into soft deletion.",
+      )
+
+      instance.destroy
+    end
 
     def sortable_columns
       [

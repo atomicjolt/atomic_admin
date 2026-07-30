@@ -18,3 +18,7 @@ class AtomicAdmin::Api::Admin::V1::ApplicationInstancesController < AtomicAdmin:
 end
 ```
 
+Some controllers expose narrower seams that are preferable to overriding a whole
+action. For deletes, override `destroy_instance` rather than `destroy` — see
+[Deleting Application Instances](deleting-application-instances.md).
+

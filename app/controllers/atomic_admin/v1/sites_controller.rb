@@ -24,8 +24,12 @@ module AtomicAdmin::V1
 
     def destroy
       @site = Site.find(params[:id])
-      @site.destroy!
-      render json: { site: json_for(@site) }
+
+      if @site.destroy
+        render json: { site: json_for(@site) }
+      else
+        render json: { errors: @site.errors }, status: 422
+      end
     end
 
     protected
