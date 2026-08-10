@@ -8,6 +8,7 @@ module RequireJwtToken
     decoder = AtomicAdmin::JwtToken::JwksDecoder.new(AtomicAdmin.admin_jwks_url)
     token = decoder.decode(encoded_token)&.first
     validate_claims!(token)
+    @atomic_admin_token = token
     token
 
   rescue JWT::DecodeError, AtomicAdmin::JwtToken::InvalidTokenError => e
@@ -39,9 +40,10 @@ module RequireJwtToken
 
   def get_encoded_token(req)
     return req.params[:jwt] if req.params[:jwt]
+    return req.params[:authorization] if req.params[:authorization]
 
     header = req.headers["Authorization"] || req.headers[:authorization]
-    raise AtomicAdmin::JwtToken::MissingTokenError, "No authorization header found" if header.nil?
+    raise AtomicAdmin::JwtToken::MissingTokenError, "No JWT field found" if header.nil?
 
     token = header.split(" ").last
     raise AtomicAdmin::JwtToken::MissingTokenError, "Invalid authorization header string" if token.nil?
