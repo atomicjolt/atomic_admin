@@ -1,6 +1,6 @@
 module AtomicAdmin::V1
   class AdminController < ActionController::API
-    include RequireJwtToken
+    include AtomicAdmin::RequireJwtToken
 
     before_action :validate_admin_token
 

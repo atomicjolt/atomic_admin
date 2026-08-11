@@ -1,4 +1,4 @@
-module RequireJwtToken
+module AtomicAdmin::RequireJwtToken
   extend ActiveSupport::Concern
 
   protected
