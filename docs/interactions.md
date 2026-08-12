@@ -1,5 +1,23 @@
 # Interactions
 
+## Permissions
+
+Any interaction type can restrict who sees it by passing `permissions:` — an array of permission strings. A user only sees the interaction if they hold at least one of the listed permissions. An empty or omitted `permissions:` array (the default) means the interaction is visible to everyone who can already access the backend.
+
+```ruby
+inter.add(
+  :activity_manager,
+  type: :launch,
+  title: "Activity Manager",
+  icon: "launch",
+  launch: lambda { |**_| "https://assessments.atomicjolt.xyz/admin/launches/init" },
+  aud: config.audience,
+  permissions: ["remote:launch:activity_manager"],
+)
+```
+
+Adding a new permission string here requires creating a matching `Permission` row in skipper and assigning it to the relevant `Role`(s) — otherwise the interaction will be invisible to everyone until that's done.
+
 ## `analytics`
 
 Display a custom analytics dashboard.
