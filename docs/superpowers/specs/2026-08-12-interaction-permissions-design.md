@@ -167,10 +167,3 @@ end
 - **Empty/missing `permissions`**: interaction is visible to all users who pass the existing coarse action-level guard. Fully backward compatible with every interaction defined today.
 - **New permission strings**: created manually as `Permission` rows and assigned to `Role`s, same process as today's fixed permission set (e.g. `remote:read:applications`). No auto-sync.
 
-## Testing
-
-- `atomic_admin`: unit test that `Base#resolve` and `Launch#resolve` include `permissions` in their output (extend existing interaction specs).
-- `skipper`:
-  - `Ability` spec: `user_has_remote_permission?` is now public; add a case where the interaction-style multi-value array grants access via `system_role` and via `BackendAccess` role independently.
-  - Controller spec for the shared `interactions` action: a user with only some of the returned interactions' permissions gets a filtered list back; a user with none of them still gets the ones with empty `permissions`.
-  - `ExternalLaunchController` spec: launching an interaction the user lacks permission for returns 403; launching one with empty `permissions` (or one they do have) succeeds as before.
