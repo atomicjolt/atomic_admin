@@ -7,12 +7,13 @@ module AtomicAdmin::V1
 
     def index
       @application_instances = ApplicationInstance.where(application_id: params[:application_id])
-      @application_instances =
-        if type == "paid"
-          @application_instances.where.not(paid_at: nil)
-        else
-          @application_instances.where(paid_at: nil)
-        end
+
+      case type
+      when "paid"
+        @application_instances = @application_instances.where.not(paid_at: nil)
+      when "evals"
+        @application_instances = @application_instances.where(paid_at: nil)
+      end
 
       @application_instances, meta = filter(@application_instances)
       @stats = get_stats_for_instances(@application_instances)
@@ -179,7 +180,7 @@ module AtomicAdmin::V1
     end
 
     def type
-      params[:type] == "paid" ? "paid" : "evals"
+      params[:type]
     end
 
     def search
