@@ -3,6 +3,7 @@ require "atomic_admin/engine"
 require "atomic_admin/jwt_token"
 require "atomic_admin/schema"
 require "atomic_admin/interaction"
+require "atomic_admin/role_capabilities/provider"
 require "atomic_admin/filtering"
 
 module AtomicAdmin

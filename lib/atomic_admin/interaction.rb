@@ -4,6 +4,7 @@ require_relative 'interaction/analytics'
 require_relative 'interaction/resource'
 require_relative 'interaction/launch'
 require_relative 'interaction/readonly'
+require_relative 'interaction/capabilities'
 require_relative 'interaction/manager'
 
 module AtomicAdmin::Interaction
