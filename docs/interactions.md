@@ -135,3 +135,55 @@ config.application_instance_interactions.tap do |inter|
     )
 end
 ```
+
+## `capabilities`
+
+Lets Skipper edit which roles get which capabilities (role capabilities). Skipper renders a matrix of capabilities by roles; each cell shows what the role grants by default or an override row (`ALLOW`, `DENY` or `PROHIBIT`) at one scope: everywhere, one account or one course.
+
+```ruby
+config.application_instance_interactions.tap do |inter|
+    inter.add(
+      :role_capabilities,
+      type: :capabilities,
+      title: "Role Capabilities",
+      icon: "admin_panel_settings",
+      provider: "MyApp::RoleCapabilitiesProvider",
+    )
+end
+```
+
+Registering the interaction adds these routes under each application instance:
+
+- `GET  .../application_instances/:application_instance_id/role_capabilities`: the catalog, roles, override rows and the scopes they use
+- `PATCH .../application_instances/:application_instance_id/role_capabilities`: replace one role's rows at one scope, `{ role: { name: }, scope: "global" | "account:<id>" | "course:<context id>", overrides: { capability => mode } }`
+- `GET  .../application_instances/:application_instance_id/role_capabilities/scopes?q=`: search accounts and courses
+
+Skipper reads them with `remote:read:applications` and saves with `remote:write:applications`.
+
+The gem's controller reads and writes rows through the host's `RoleCapability` model (`role`, `capability`, `mode`, `context_id`, `account_id`) and `Role` model (`name`), in the application instance's tenant. Everything else comes from the provider: a subclass of `AtomicAdmin::RoleCapabilities::Provider`, named as a string so it reloads in development. The controller builds one per request with `application_instance:`, so the catalog can differ between instances.
+
+```ruby
+# app/lib/my_app/role_capabilities_provider.rb
+class MyApp::RoleCapabilitiesProvider < AtomicAdmin::RoleCapabilities::Provider
+  # Required: [{ name:, group:, label:, description: }] in display order
+  def capability_catalog
+    Capabilities.catalog
+  end
+
+  # Required: the capability names a role grants with no override rows
+  def role_defaults(role)
+    Capabilities.default_capabilities_for_role(role.name)
+  end
+end
+```
+
+Optional hooks (see `AtomicAdmin::RoleCapabilities::Provider` for their defaults):
+
+- `capability_groups`: `[{ key:, label: }]` naming the catalog's groups, in order
+- `role_tiers`, `role_tier(role)`: the default sets roles fall into (`[{ key:, label: }]`, highest first) and each role's tier; columns are ordered by tier
+- `listed_roles`: the roles that get a column (every role by default)
+- `role_display_name(role)`, `role_kind(role)`: how a role that is not a standard LTI role URI is titled and described
+- `custom_roles`, `custom_role?(role)`, `role_for_update(name)`: let roles that have not launched yet be added by name, e.g. `{ label: "Canvas custom role", prefix: "canvas:", example: "Grade Viewer" }`; by default an update must name an existing role
+- `account_scopes(ids)`, `course_scopes(context_ids)`, `search_scopes(term)`, `valid_account_id?(id)`: name and find accounts and courses, built with `account_scope_json` and `course_scope_json`. Course scopes cannot be saved until `course_scopes` returns the courses that exist
+- `notes`: short notes shown under the matrix, such as how a role's defaults depend on the user's other roles
+- `replace_overrides!(role, overrides, context_id:, account_id:)`: how one role's rows at one scope are replaced

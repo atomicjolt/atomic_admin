@@ -8,6 +8,7 @@ module AtomicAdmin::Interaction
       resource: AtomicAdmin::Interaction::Resource,
       launch: AtomicAdmin::Interaction::Launch,
       readonly: AtomicAdmin::Interaction::Readonly,
+      capabilities: AtomicAdmin::Interaction::Capabilities,
     }.freeze
 
     def initialize

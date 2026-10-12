@@ -42,6 +42,14 @@ AtomicAdmin::Engine.routes.draw do
               end
             end
 
+            # Backs the `capabilities` interaction; the host supplies its
+            # provider. See AtomicAdmin::V1::RoleCapabilitiesController.
+            if AtomicAdmin.application_instance_interactions.for_type(:capabilities).any?
+              resource :role_capabilities, only: [:show, :update] do
+                get :scopes
+              end
+            end
+
             AtomicAdmin.application_instance_interactions.for_type(:resource).each do |interaction|
               controller_name = interaction.key.to_s.pluralize
               resources controller_name do
