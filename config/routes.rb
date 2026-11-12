@@ -30,6 +30,7 @@ AtomicAdmin::Engine.routes.draw do
           resources :application_instances do
             member do
               get :interactions
+              post :restore
             end
 
             resources :tenant_client_id_strategies
