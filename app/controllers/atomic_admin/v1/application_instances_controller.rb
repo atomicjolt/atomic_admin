@@ -6,7 +6,16 @@ module AtomicAdmin::V1
     allowed_search_columns %w[nickname]
 
     def index
-      @application_instances = ApplicationInstance.where(application_id: params[:application_id])
+      @application_instances = instances_scope.where(application_id: params[:application_id])
+
+      if soft_delete_supported?
+        if show_deleted?
+          @application_instances = @application_instances.where.not(deleted_at: nil)
+          @application_instances = @application_instances.order(deleted_at: :desc) if params[:sort_on].blank?
+        else
+          @application_instances = @application_instances.where(deleted_at: nil)
+        end
+      end
 
       case type
       when "paid"
@@ -16,6 +25,7 @@ module AtomicAdmin::V1
       end
 
       @application_instances, meta = filter(@application_instances)
+      meta[:supports_soft_delete] = soft_delete_supported?
       @stats = get_stats_for_instances(@application_instances)
 
       render json: {
@@ -65,6 +75,24 @@ module AtomicAdmin::V1
 
       if destroy_instance(instance)
         render json: { success: true }
+      else
+        render json: { errors: instance.errors }, status: 422
+      end
+    end
+
+    # Undoes a soft delete. Only instances that are still soft-deleted can be
+    # restored; once the host has purged one it is gone.
+    def restore
+      unless soft_delete_supported?
+        render json: { errors: { base: ["Application instances can't be restored"] } }, status: 422
+        return
+      end
+
+      instance = instances_scope.where.not(deleted_at: nil).find(params[:id])
+
+      if restore_instance(instance)
+        @stats = get_stats_for_instances([instance])
+        render json: { application_instance: json_for(instance) }
       else
         render json: { errors: instance.errors }, status: 422
       end
@@ -124,6 +152,7 @@ module AtomicAdmin::V1
       json["is_paid"] = instance.paid_at.present? if instance.respond_to?(:paid_at)
       json["lti_config_xml"] = instance.lti_config_xml if instance.respond_to?(:lti_config_xml)
       json["request_stats"] = request_stats(instance)
+      json["purge_at"] = instance.purge_at if instance.respond_to?(:purge_at)
 
       json
     end
@@ -155,6 +184,32 @@ module AtomicAdmin::V1
       )
 
       instance.destroy
+    end
+
+    # Restores a soft-deleted application instance. Host apps that define
+    # #restore get it called; otherwise deleted_at is cleared. Returns truthy
+    # on success.
+    def restore_instance(instance)
+      return instance.restore if instance.respond_to?(:restore)
+
+      instance.update(deleted_at: nil)
+    end
+
+    # Soft delete is supported when ApplicationInstance has a deleted_at
+    # column, whether or not it hides deleted rows with a default scope.
+    def soft_delete_supported?
+      ApplicationInstance.column_names.include?("deleted_at")
+    end
+
+    # Every instance, including soft-deleted ones a default scope would hide.
+    def instances_scope
+      return ApplicationInstance.all unless soft_delete_supported?
+
+      ApplicationInstance.unscope(where: :deleted_at)
+    end
+
+    def show_deleted?
+      ActiveModel::Type::Boolean.new.cast(params[:deleted]) || false
     end
 
     def sortable_columns
