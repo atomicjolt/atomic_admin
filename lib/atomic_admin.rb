@@ -8,6 +8,9 @@ require "atomic_admin/filtering"
 
 module AtomicAdmin
   mattr_accessor :admin_jwks_url
+  # Path to a JWKS file, e.g. one mounted by External Secrets. Takes precedence
+  # over admin_jwks_url when the file exists.
+  mattr_accessor :admin_jwks_path
   mattr_accessor :audience
   mattr_accessor :internal_secret
   mattr_accessor :application_interactions, default: AtomicAdmin::Interaction::Manager.new

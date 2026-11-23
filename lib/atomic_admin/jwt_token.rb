@@ -1,3 +1,5 @@
+require "jwt"
+require "httparty"
 require_relative 'jwt_token/jwks_decoder'
 require_relative 'jwt_token/secret_decoder'
 
