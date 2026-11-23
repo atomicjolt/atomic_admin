@@ -21,6 +21,38 @@ end
 
 No configuration is required — implementing the method is the opt-in.
 
+## Listing and restoring deleted instances
+
+When `ApplicationInstance` has a `deleted_at` column, the engine treats it as
+soft-deletable, whether or not a default scope hides deleted rows:
+
+- `GET .../application_instances` leaves deleted instances out, and its `meta`
+  has `supports_soft_delete: true` so the admin UI knows to offer the deleted
+  list.
+- `GET .../application_instances?deleted=true` lists only deleted instances,
+  most recently deleted first unless `sort_on` is given.
+- `POST .../application_instances/:id/restore` restores a deleted instance and
+  responds with it as `{ "application_instance": { ... } }`. It calls the
+  instance's `restore` method when there is one and otherwise sets `deleted_at`
+  back to `nil` with `update`, so validation failures respond `422`. Instances
+  that are not deleted respond `404`.
+
+If the instance responds to `purge_at`, its JSON includes `purge_at`, the time
+the host app will permanently remove it. The admin UI shows it in the deleted
+list:
+
+```ruby
+class ApplicationInstance < ApplicationRecord
+  def purge_at
+    deleted_at && (deleted_at + 30.days)
+  end
+
+  def restore
+    update_columns(deleted_at: nil, updated_at: Time.current)
+  end
+end
+```
+
 ## Why this matters for multi-tenant apps
 
 For an app that gives each application instance its own Apartment tenant, a hard
