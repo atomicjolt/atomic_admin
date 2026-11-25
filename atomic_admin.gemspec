@@ -22,4 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "atomic_lti", ">= 1.5.0", "< 5.0.0"
   spec.add_dependency "atomic_tenant", ">= 1.2.0", "< 2.0.0"
   spec.add_dependency "httparty", ">= 0.24.0", "< 1.0.0"
+  spec.add_dependency "jwt", ">= 2.6", "< 4.0"
 end
