@@ -101,3 +101,48 @@ class JwksDecoderTest < ActiveSupport::TestCase
     HTTParty.define_singleton_method(:get, original)
   end
 end
+
+class VerifyAdminJwksFileTest < ActiveSupport::TestCase
+  FILE_NAME = "admin-jwks-boot-test.json".freeze
+
+  setup do
+    @original = AtomicAdmin.admin_jwks_file
+    @path = File.join(Rails.configuration.paths["config"].existent.first, "k8s", FILE_NAME)
+  end
+
+  teardown do
+    AtomicAdmin.admin_jwks_file = @original
+    FileUtils.rm_f(@path)
+  end
+
+  test "passes when no file is configured" do
+    AtomicAdmin.admin_jwks_file = nil
+
+    assert_nil AtomicAdmin.verify_admin_jwks_file!
+  end
+
+  test "passes when the configured file exists" do
+    AtomicAdmin.admin_jwks_file = FILE_NAME
+    FileUtils.mkdir_p(File.dirname(@path))
+    File.write(@path, "{}")
+
+    assert_equal @path, AtomicAdmin.verify_admin_jwks_file!
+  end
+
+  test "raises when the configured file is missing" do
+    AtomicAdmin.admin_jwks_file = FILE_NAME
+
+    assert_raises(AtomicAdmin::JwtToken::MissingJwksError) { AtomicAdmin.verify_admin_jwks_file! }
+  end
+
+  test "skips the check during assets tasks" do
+    AtomicAdmin.admin_jwks_file = FILE_NAME
+    require "rake"
+    original_tasks = Rake.application.top_level_tasks.dup
+    Rake.application.top_level_tasks.replace(["assets:precompile"])
+
+    assert_nil AtomicAdmin.verify_admin_jwks_file!
+  ensure
+    Rake.application.top_level_tasks.replace(original_tasks) if original_tasks
+  end
+end

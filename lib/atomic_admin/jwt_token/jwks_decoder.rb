@@ -17,6 +17,15 @@ module AtomicAdmin::JwtToken
       @algorithms = algorithms
     end
 
+    # Path of the JWKS file named `name` in the app's config directory, or
+    # MissingJwksError if it's in neither config/k8s/ nor config/.
+    def self.find_file!(name)
+      config = Rails.configuration.paths["config"].existent.first
+      candidates = ["#{config}/k8s/#{name}", "#{config}/#{name}"]
+      candidates.find { |path| File.file?(path) } ||
+        raise(MissingJwksError, "Admin JWKS file not found, looked in: #{candidates.join(', ')}")
+    end
+
     def decode(token, validate = true)
       load_admin_jwks = ->(options) do
         JWT::JWK::Set.new(admin_jwks(options)).select { |k| k[:use] == "sig" }
@@ -43,7 +52,7 @@ module AtomicAdmin::JwtToken
     def admin_jwks(options)
       # The file is small and gets replaced in place when the keys rotate, so
       # it is read on every call instead of being cached.
-      return JSON.parse(File.read(jwks_file_path)) if @jwks_file.present?
+      return JSON.parse(File.read(self.class.find_file!(@jwks_file))) if @jwks_file.present?
 
       Rails.cache.delete(CACHE_KEY) if options[:kid_not_found]
 
@@ -53,11 +62,5 @@ module AtomicAdmin::JwtToken
       end
     end
 
-    def jwks_file_path
-      config = Rails.configuration.paths["config"].existent.first
-      candidates = ["#{config}/k8s/#{@jwks_file}", "#{config}/#{@jwks_file}"]
-      candidates.find { |path| File.file?(path) } ||
-        raise(MissingJwksError, "Admin JWKS file not found, looked in: #{candidates.join(', ')}")
-    end
   end
 end

@@ -26,8 +26,10 @@ public keys come from in an initializer:
     # checked first (where External Secrets mounts it when deployed), then
     # config/, the same as ConfigLoader. It is read on every request, so
     # rotated keys are picked up without a restart. If it's set and neither
-    # file exists, AtomicAdmin::JwtToken::MissingJwksError is raised.
-    # Locally, save your admin app's /jwks.json as config/admin-jwks.json.
+    # file exists, the app fails to start with
+    # AtomicAdmin::JwtToken::MissingJwksError (except during assets:*
+    # tasks, e.g. precompiling in a Docker build). Locally, save your admin
+    # app's /jwks.json as config/admin-jwks.json.
     config.admin_jwks_file = "admin-jwks.json"
 
     # Or, without admin_jwks_file, fetch it from the admin app. Cached until a
