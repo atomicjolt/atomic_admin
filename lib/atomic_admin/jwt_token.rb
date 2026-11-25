@@ -7,5 +7,7 @@ module AtomicAdmin
   module JwtToken
     class InvalidTokenError < StandardError; end
     class MissingTokenError < StandardError; end
+    # admin_jwks_file is configured but the file doesn't exist.
+    class MissingJwksError < StandardError; end
   end
 end

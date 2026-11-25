@@ -22,13 +22,16 @@ public keys come from in an initializer:
 
   ```ruby
   AtomicAdmin.configure do |config|
-    # Read the JWKS from a file, e.g. one mounted by External Secrets from
-    # Parameter Store. Used whenever the file exists. It is read on every
-    # request, so rotated keys are picked up without a restart.
-    config.admin_jwks_path = Rails.root.join("config", "k8s", "admin-jwks.json")
+    # Read the JWKS from this file in the config directory. config/k8s/ is
+    # checked first (where External Secrets mounts it when deployed), then
+    # config/, the same as ConfigLoader. It is read on every request, so
+    # rotated keys are picked up without a restart. If it's set and neither
+    # file exists, AtomicAdmin::JwtToken::MissingJwksError is raised.
+    # Locally, save your admin app's /jwks.json as config/admin-jwks.json.
+    config.admin_jwks_file = "admin-jwks.json"
 
-    # Otherwise fetch it from the admin app. Cached until a token arrives
-    # with an unknown kid.
-    config.admin_jwks_url = "https://admin.example.com/jwks.json"
+    # Or, without admin_jwks_file, fetch it from the admin app. Cached until a
+    # token arrives with an unknown kid.
+    # config.admin_jwks_url = "https://admin.example.com/jwks.json"
   end
   ```

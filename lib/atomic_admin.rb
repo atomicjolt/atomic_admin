@@ -8,9 +8,11 @@ require "atomic_admin/filtering"
 
 module AtomicAdmin
   mattr_accessor :admin_jwks_url
-  # Path to a JWKS file, e.g. one mounted by External Secrets. Takes precedence
-  # over admin_jwks_url when the file exists.
-  mattr_accessor :admin_jwks_path
+  # Name of a JWKS file in the app's config directory, e.g. "admin-jwks.json".
+  # config/k8s/ (mounted by External Secrets) is checked first, then config/.
+  # When set, the file must exist (MissingJwksError otherwise) and
+  # admin_jwks_url isn't used.
+  mattr_accessor :admin_jwks_file
   mattr_accessor :audience
   mattr_accessor :internal_secret
   mattr_accessor :application_interactions, default: AtomicAdmin::Interaction::Manager.new

@@ -7,7 +7,7 @@ module AtomicAdmin::RequireJwtToken
     encoded_token = get_encoded_token(request)
     decoder = AtomicAdmin::JwtToken::JwksDecoder.new(
       AtomicAdmin.admin_jwks_url,
-      jwks_path: AtomicAdmin.admin_jwks_path,
+      jwks_file: AtomicAdmin.admin_jwks_file,
     )
     token = decoder.decode(encoded_token)&.first
     validate_claims!(token)
