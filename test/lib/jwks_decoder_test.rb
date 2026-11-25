@@ -20,6 +20,12 @@ class JwksDecoderTest < ActiveSupport::TestCase
     assert_equal "test", decoder.decode!(@token)["aud"]
   end
 
+  test "accepts a Pathname" do
+    decoder = AtomicAdmin::JwtToken::JwksDecoder.new(nil, jwks_path: Pathname.new(@file.path))
+
+    assert_equal "test", decoder.decode!(@token)["aud"]
+  end
+
   test "picks up rotated keys from the jwks file without a restart" do
     decoder = AtomicAdmin::JwtToken::JwksDecoder.new(nil, jwks_path: @file.path)
     decoder.decode!(@token)

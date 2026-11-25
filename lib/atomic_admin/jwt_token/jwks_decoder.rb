@@ -10,7 +10,7 @@ module AtomicAdmin::JwtToken
 
     def initialize(jwks_url, algorithms = ALGORITHMS, jwks_path: nil)
       @jwks_url = jwks_url
-      @jwks_path = jwks_path
+      @jwks_path = jwks_path&.to_s # may be a Pathname
       @algorithms = algorithms
     end
 
